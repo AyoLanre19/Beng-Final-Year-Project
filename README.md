@@ -1,11 +1,13 @@
 # Tax System
 
+Smart tax platform that turns bank statements into structured, classified financial data.
+
 This workspace contains a React frontend in `client/` and an Express + TypeScript backend in `backend-clean/`.
 
 ## Backend features
 
 - Four portal flows: `individual`, `sme`, `company`, and `admin`
-- Auth endpoints with local JWT fallback and optional Supabase integration
+- Auth endpoints with local JWT fallback and optional database integration
 - File upload for PDF, image, CSV, XLSX, and TXT statements
 - Flexible Nigerian bank-statement parsing with heuristics for GTBank, Access, UBA, FirstBank, Zenith, Moniepoint, OPay, and similar layouts
 - Ollama transaction classification when `ollama qwen2.5:7b` is set
@@ -23,42 +25,14 @@ This workspace contains a React frontend in `client/` and an Express + TypeScrip
 ## Setup
 
 1. Copy `.env.example` to `.env`.
-2. Fill in Database(pastgress) and Ollama  qwen2.5:7b keys if you want live integrations.
-3. Run `npm install --prefix server`.
-4. Run `npm install --prefix client` if the frontend dependencies are missing.
-5. Start the backend with `npm run dev --prefix server`.
+2. Fill in your database and Ollama settings if you want live integrations.
+3. Run `npm install --prefix backend-clean`.
+4. Run `npm install --prefix client`.
+5. Start the backend with `npm run dev --prefix backend-clean`.
 6. Start the frontend with `npm run dev --prefix client`.
-
-## API overview
-
-- `POST /api/auth/signup`
-- `POST /api/auth/login`
-- `GET /api/auth/me`
-- `GET /api/dashboard`
-- `POST /api/upload`
-- `POST /api/classify`
-- `POST /api/save-transactions`
-- `POST /api/calculate`
-- `POST /api/submit-filing`
-- `GET /api/download-filing/download/:filingId`
-- `GET /api/admin/metrics`
-- `GET /api/admin/charts`
-- `GET /api/admin/users`
-- `GET /api/admin/filings/:id`
-- `POST /api/admin/filings/:id/approve`
-- `POST /api/admin/filings/:id/flag`
-- `GET /api/admin/ai/metrics`
-- `GET /api/admin/ai/misclassifications`
-- `GET /api/admin/ai/accuracy-trend`
 
 ## Notes
 
-- If postgress keys are not configured, the backend still works in local-memory mode for development.
-- The upload pipeline stores extracted text and metadata in memory right now; `schema.sql` provides the tables needed to persist them in postgress.
-- To make a user an admin in paotgress, run:
+- Secret `.env` files are intentionally ignored by Git.
+- Build outputs like `dist/` and dependencies like `node_modules/` are also ignored.
 
-```sql
-update profiles
-set role = 'admin'
-where email = 'your-email@example.com';
-```
