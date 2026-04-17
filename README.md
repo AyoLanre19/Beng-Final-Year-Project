@@ -1,6 +1,6 @@
 # Tax System
 
-This workspace contains a React frontend in `client/` and an Express + TypeScript backend in `server/`.
+This workspace contains a React frontend in `client/` and an Express + TypeScript backend in `backend-clean/`.
 
 ## Backend features
 
@@ -8,7 +8,7 @@ This workspace contains a React frontend in `client/` and an Express + TypeScrip
 - Auth endpoints with local JWT fallback and optional Supabase integration
 - File upload for PDF, image, CSV, XLSX, and TXT statements
 - Flexible Nigerian bank-statement parsing with heuristics for GTBank, Access, UBA, FirstBank, Zenith, Moniepoint, OPay, and similar layouts
-- Gemini-powered transaction classification when `GEMINI_API_KEY` is set
+- Ollama transaction classification when `ollama qwen2.5:7b` is set
 - Nigerian tax estimates for personal income tax, company income tax, VAT, and estimated withholding tax
 - Admin metrics, filing review, AI monitoring, and filing PDF export
 
@@ -23,7 +23,7 @@ This workspace contains a React frontend in `client/` and an Express + TypeScrip
 ## Setup
 
 1. Copy `.env.example` to `.env`.
-2. Fill in Supabase and Gemini keys if you want live integrations.
+2. Fill in Database(pastgress) and Ollama  qwen2.5:7b keys if you want live integrations.
 3. Run `npm install --prefix server`.
 4. Run `npm install --prefix client` if the frontend dependencies are missing.
 5. Start the backend with `npm run dev --prefix server`.
@@ -53,9 +53,9 @@ This workspace contains a React frontend in `client/` and an Express + TypeScrip
 
 ## Notes
 
-- If Supabase keys are not configured, the backend still works in local-memory mode for development.
-- The upload pipeline stores extracted text and metadata in memory right now; `schema.sql` provides the tables needed to persist them in Supabase.
-- To make a user an admin in Supabase, run:
+- If postgress keys are not configured, the backend still works in local-memory mode for development.
+- The upload pipeline stores extracted text and metadata in memory right now; `schema.sql` provides the tables needed to persist them in postgress.
+- To make a user an admin in paotgress, run:
 
 ```sql
 update profiles
