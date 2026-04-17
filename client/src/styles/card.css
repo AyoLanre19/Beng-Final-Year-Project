@@ -1,0 +1,30 @@
+.metric-card{
+
+background:white;
+padding:20px;
+border-radius:14px;
+
+box-shadow:0 6px 18px rgba(0,0,0,0.04);
+
+width:220px;
+}
+
+.metric-card h4{
+
+font-size:14px;
+color:#7a889f;
+margin-bottom:8px;
+}
+
+.metric-card h2{
+
+font-size:24px;
+color:#1e2a3b;
+margin-bottom:6px;
+}
+
+.metric-card p{
+
+font-size:13px;
+color:#8a97ad;
+}

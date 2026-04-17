@@ -1,0 +1,161 @@
+/* PAGE CONTAINER */
+.sme-re-page {
+  flex: 1;
+  overflow-y: auto;
+  padding: 150px;
+  padding-top: 20px;
+    background: #f4f7ff;
+}
+
+/* GLASS EFFECT */
+.glass {
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* TITLE */
+.sme-title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.sme-sub {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* UPLOAD */
+.upload-card {
+  padding: 20px;
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.upload-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.status {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.upload-box {
+  border: 2px dashed #c7d7ff;
+  padding: 30px;
+  text-align: center;
+  border-radius: 12px;
+  background: linear-gradient(to right, #eef3ff, #f8fbff);
+}
+
+.upload-text {
+  font-weight: 500;
+}
+
+.upload-sub {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.browse-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: linear-gradient(to right, #4f8cff, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* TABLE */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.sme-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sme-table th {
+  background: #f1f5ff;
+  padding: 14px;
+  text-align: left;
+}
+
+.sme-table td {
+  padding: 14px;
+  border-top: 1px solid #eef2ff;
+}
+
+.right {
+  text-align: right;
+}
+
+.pos {
+  color: #1f2937;
+}
+
+.neg {
+  color: #ef4444;
+}
+
+/* DROPDOWN */
+.sme-table select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #dbe3ff;
+  background: white;
+  outline: none;
+}
+
+/* INSIGHTS */
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 25px 0;
+}
+
+.card {
+  padding: 20px;
+  width: 100%;
+}
+
+.card p {
+  color: #6b7280;
+}
+
+.card h2 {
+  margin-top: 10px;
+}
+
+/* WARNING */
+.warning {
+  background: rgba(255, 247, 237, 0.9);
+}
+
+.warning li {
+  margin-top: 8px;
+}
+
+/* BUTTON */
+.confirm-wrap {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.confirm-btn {
+  padding: 14px 40px;
+  background: linear-gradient(to right, #4f8cff, #3b82f6);
+  color: white;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}

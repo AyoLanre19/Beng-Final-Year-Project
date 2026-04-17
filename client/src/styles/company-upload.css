@@ -1,0 +1,181 @@
+.page-title {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.page-sub {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* UPLOAD */
+.upload-card {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.upload-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.upload-drop {
+  border: 2px dashed #c7d2fe;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+}
+
+.upload-drop button {
+  margin-top: 10px;
+  background: #3b82f6;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+}
+
+.upload-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.upload-now-btn {
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+}
+
+.upload-message {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.upload-message.success {
+  color: #15803d;
+}
+
+.upload-message.error {
+  color: #dc2626;
+}
+
+.upload-stats {
+  margin-top: 10px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: #374151;
+  font-size: 13px;
+}
+
+/* TABLE */
+.table-card {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+td {
+  padding: 10px 0;
+  border-top: 1px solid #eee;
+}
+
+.neg {
+  color: #ef4444;
+}
+
+.pos {
+  color: #111827;
+}
+
+/* INSIGHTS */
+.insights-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.insight-card {
+  padding: 15px;
+}
+
+/* BOTTOM GRID */
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* WARNINGS */
+.warnings {
+  padding: 20px;
+  background: #fff7ed;
+}
+
+.warnings ul {
+  margin-top: 10px;
+  color: #92400e;
+}
+
+/* CONFIDENCE */
+.confidence {
+  padding: 20px;
+  text-align: center;
+}
+
+.confidence-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 15px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.inner {
+  width: 85px;
+  height: 85px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.accuracy {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* CONFIRM */
+.confirm-area {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.confirm-btn {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  color: white;
+  padding: 12px 40px;
+  border-radius: 10px;
+}
+
+.secure-text {
+  margin-top: 10px;
+  color: #6b7280;
+  font-size: 13px;
+}

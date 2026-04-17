@@ -1,0 +1,45 @@
+.sidebar{
+
+width:240px;
+background:white;
+border-right:1px solid #e6eaf2;
+
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+
+padding:30px 20px;
+}
+
+.logo{
+font-weight:600;
+font-size:20px;
+margin-bottom:40px;
+}
+
+nav{
+display:flex;
+flex-direction:column;
+gap:18px;
+}
+
+nav a{
+
+padding:10px 14px;
+border-radius:8px;
+color:#6c7a92;
+cursor:pointer;
+}
+
+nav a.active{
+
+background:#eef3ff;
+color:#3b6cff;
+font-weight:600;
+}
+
+.logout{
+
+color:#7d8aa6;
+font-size:14px;
+}

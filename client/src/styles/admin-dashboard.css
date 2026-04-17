@@ -1,0 +1,146 @@
+.recent-activity-card {
+  margin-top: 22px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(221, 226, 255, 0.9);
+  border-radius: 22px;
+  box-shadow: 0 10px 24px rgba(113, 111, 190, 0.08);
+  padding: 18px 16px 16px 16px;
+}
+
+.recent-activity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.recent-activity-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2a3154;
+}
+
+.view-all-btn {
+  border: none;
+  background: transparent;
+  color: #6b7398;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.recent-activity-table-wrap {
+  overflow-x: auto;
+  border-radius: 16px;
+}
+
+.recent-activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.38);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.recent-activity-table thead th {
+  text-align: left;
+  font-size: 15px;
+  font-weight: 500;
+  color: #5e678d;
+  background: rgba(238, 237, 255, 0.9);
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(223, 227, 248, 0.9);
+}
+
+.recent-activity-table tbody td {
+  padding: 16px;
+  color: #3c456b;
+  font-size: 15px;
+  border-bottom: 1px solid rgba(228, 232, 250, 0.9);
+  vertical-align: middle;
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #85a8ff 0%, #6f8fff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.user-name {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #2e3559;
+}
+
+.user-email {
+  font-size: 13px;
+  color: #8a92b6;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.badge-filed {
+  background: #76d4c5;
+  color: #ffffff;
+}
+
+.badge-pending {
+  background: #efc978;
+  color: #6e5424;
+}
+
+.badge-draft {
+  background: #b8b2d8;
+  color: #514b78;
+}
+
+.badge-low {
+  background: #70cdbd;
+  color: #ffffff;
+}
+
+.badge-medium {
+  background: #ee9f68;
+  color: #ffffff;
+}
+
+.badge-high {
+  background: #e57f79;
+  color: #ffffff;
+}
+
+.view-btn {
+  border: none;
+  background: transparent;
+  color: #5f6c96;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.view-btn:hover,
+.view-all-btn:hover {
+  opacity: 0.8;
+}

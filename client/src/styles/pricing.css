@@ -1,0 +1,194 @@
+.pricing-wrapper {
+  padding: 90px 24px;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.pricing-wrapper h2 {
+  font-size: 34px;
+  color: #2c3e60;
+}
+
+.pricing-subtitle {
+  max-width: 700px;
+  margin: 12px auto 40px;
+  color: #6b7a99;
+}
+
+/* Toggle */
+.billing-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px;
+  border-radius: 16px;
+  margin-bottom: 60px;
+}
+
+.billing-toggle span {
+  font-size: 14px;
+  color: #6b7a99;
+}
+
+.billing-toggle .active {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  width: 42px;
+  height: 22px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  background: #dbeafe;
+  border-radius: 22px;
+  inset: 0;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.25s ease;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* Cards */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.pricing-card {
+  padding: 36px 28px;
+  position: relative;
+}
+
+.pricing-card img {
+  max-width: 100%;
+  margin-bottom: 16px;
+}
+
+.pricing-card h3 {
+  font-size: 22px;
+}
+
+.price {
+  font-size: 32px;
+  margin: 8px 0;
+}
+
+.price span {
+  font-size: 14px;
+}
+
+.gold-text {
+  color: #d4a017;
+}
+
+.approx {
+  font-size: 13px;
+  color: #7c8ca6;
+}
+
+.pricing-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.pricing-card li {
+  margin-bottom: 10px;
+  color: #4b5d78;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-gold,
+.btn-outline {
+  padding: 14px;
+  width: 100%;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, #facc15, #d4a017);
+  color: #3b2f00;
+}
+
+.btn-outline {
+  border: 1px solid #c7d2fe;
+  background: transparent;
+}
+
+/* Badge */
+.badge {
+  position: absolute;
+  top: -14px;
+  right: 20px;
+  width: 120px;
+}
+
+/* Footer */
+.pricing-footer {
+  margin-top: 60px;
+}
+
+.secure {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.brands {
+  display: flex;
+  justify-content: center;
+  padding: 36px;
+  margin-top: 18px;
+}
+
+.brands img {
+  height: 34px;
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}

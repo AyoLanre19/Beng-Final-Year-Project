@@ -1,0 +1,116 @@
+.company-pricing-wrapper {
+  padding: 80px 24px;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.breadcrumb {
+  text-align: left;
+  color: #8a99b5;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.company-pricing-wrapper h2 {
+  font-size: 34px;
+  color: #2c3e60;
+}
+
+.subtitle {
+  color: #6b7a99;
+  margin: 10px auto 50px;
+  max-width: 600px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.pricing-card {
+  padding: 36px 28px;
+  position: relative;
+}
+
+.pricing-card img {
+  max-width: 100%;
+  margin-bottom: 16px;
+}
+
+.price {
+  font-size: 30px;
+  margin: 8px 0;
+}
+
+.price span {
+  font-size: 14px;
+}
+
+.gold-text {
+  color: #d4a017;
+}
+
+.note {
+  font-size: 13px;
+  color: #7c8ca6;
+}
+
+.pricing-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.pricing-card li {
+  margin-bottom: 10px;
+  color: #4b5d78;
+}
+
+.badge {
+  position: absolute;
+  top: -14px;
+  right: 20px;
+  width: 120px;
+}
+
+/* Buttons reuse existing styles */
+
+.pricing-footer {
+  margin-top: 60px;
+}
+
+.secure {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.brands {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 18px;
+}
+
+.brands img {
+  height: 34px;
+  opacity: 0.7;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}

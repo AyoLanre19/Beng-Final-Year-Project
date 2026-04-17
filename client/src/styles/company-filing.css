@@ -1,0 +1,125 @@
+/* PAGE BACKGROUND */
+.company-page {
+  padding: 24px;
+  background: #f5f7fb;
+}
+
+/* MAIN CARD */
+.filing-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+/* GRID INSIDE SUMMARY */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+/* SECTION HEADINGS */
+.filing-card h4 {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+/* TOTAL HIGHLIGHT */
+.total {
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+/* DECLARATION */
+.declaration-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 20px;
+}
+
+/* CHECKBOX TEXT */
+.checkbox {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+/* SUBMIT SECTION */
+.submit-section {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.submit-btn {
+  padding: 14px 22px;
+  border-radius: 10px;
+  background: #cbd5e1;
+  color: white;
+  border: none;
+  cursor: not-allowed;
+}
+
+.submit-btn.active {
+  background: #2563eb;
+  cursor: pointer;
+}
+
+/* SUCCESS BLOCK (NOT MODAL) */
+.success-panel {
+  margin-top: 24px;
+  padding: 40px;
+  border-radius: 18px;
+  text-align: center;
+  background: linear-gradient(180deg, #ffffff, #f9fbff);
+}
+
+.success-icon {
+  font-size: 44px;
+  color: #16a34a;
+  margin-bottom: 10px;
+}
+
+.ref-box {
+  margin: 20px auto;
+  padding: 12px;
+  background: #eef2ff;
+  color: #1d4ed8;
+  font-weight: 600;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+.success-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.primary-btn {
+  background: #2563eb;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+}
+
+.secondary-btn {
+  background: white;
+  border: 1px solid #cbd5e1;
+  padding: 12px 16px;
+  border-radius: 10px;
+}
+
+.small-note {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #6b7280;
+}
