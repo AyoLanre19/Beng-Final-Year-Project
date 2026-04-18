@@ -1,7 +1,6 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import path from "path";
 import { createDocument } from "../services/documentService.js";
-import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { parseFile } from "../services/fileParser.js";
 import { saveRawTransactions } from "../services/rawTransactionService.js";
 import {
@@ -9,6 +8,8 @@ import {
   type NormalizedTransaction,
 } from "../services/transactionNormalizer.js";
 import { saveTransactions } from "../services/transactionService.js";
+import { classifyTransactions } from "../services/aiClassifier.js";
+import { updateClassifiedTransactions } from "../services/classificationService.js";
 
 const getFileType = (mimeType: string, originalName: string): string => {
   const ext = path.extname(originalName).toLowerCase();
@@ -36,10 +37,7 @@ const getSourceFormat = (fileType: string): string => {
   return "unknown";
 };
 
-export const uploadBankStatement = async (
-  req: AuthenticatedRequest,
-  res: Response
-) => {
+export const uploadBankStatement = async (req: Request, res: Response) => {
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -55,10 +53,11 @@ export const uploadBankStatement = async (
       });
     }
 
-    const userId = req.user?.id ?? "cd5d95c7-c9a8-4680-92e4-6344bfe768af";
+    const temporaryUserId = "cd5d95c7-c9a8-4680-92e4-6344bfe768af";
+    const temporaryUserType: "individual" | "sme" | "company" = "individual";
 
     const document = await createDocument({
-      userId,
+      userId: temporaryUserId,
       originalName: req.file.originalname,
       fileType,
       sourceFormat: getSourceFormat(fileType),
@@ -78,17 +77,29 @@ export const uploadBankStatement = async (
         .filter((row): row is NormalizedTransaction => row !== null);
 
       await saveTransactions({
-        userId,
+        userId: temporaryUserId,
         documentId: document.id,
         sourceType: fileType,
         sourceBank: document.source_bank,
         transactions: normalizedTransactions,
       });
 
+      const classifiedTransactions = await classifyTransactions(
+        temporaryUserType,
+        normalizedTransactions
+      );
+
+      await updateClassifiedTransactions({
+        userId: temporaryUserId,
+        documentId: document.id,
+        transactions: classifiedTransactions,
+      });
+
       return res.status(201).json({
-        message: "File uploaded, parsed, and normalized successfully",
+        message: "File uploaded, parsed, normalized, and classified successfully",
         rowsParsed: parsedRows.length,
         transactionsCreated: normalizedTransactions.length,
+        transactionsClassified: classifiedTransactions.length,
         document,
       });
     }
