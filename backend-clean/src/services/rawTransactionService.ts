@@ -1,6 +1,15 @@
 import { randomUUID } from "crypto";
 import { pool } from "../config/db.js";
-import type { ParsedRawRow } from "./fileParser.js";
+
+type ParsedRawRow = {
+  raw_date?: string | null;
+  raw_description?: string | null;
+  raw_amount?: string | number | null;
+  raw_debit?: string | number | null;
+  raw_credit?: string | number | null;
+  raw_balance?: string | number | null;
+  raw_json: unknown;
+};
 
 type SaveRawTransactionsInput = {
   documentId: string;
