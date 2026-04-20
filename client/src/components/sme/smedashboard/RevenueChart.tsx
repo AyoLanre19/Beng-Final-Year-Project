@@ -1,24 +1,25 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+} from "recharts";
+import type { DashboardMetricRow } from "../../../services/dashboardService";
 
-const data = [
-  {name:"Jan", revenue:3500000},
-  {name:"Feb", revenue:2500000},
-  {name:"Mar", revenue:4200000},
-  {name:"Apr", revenue:4700000}
-];
+type RevenueChartProps = {
+  data: DashboardMetricRow[];
+};
 
-export default function RevenueChart(){
-
-  return(
+export default function RevenueChart({ data }: RevenueChartProps) {
+  return (
     <div className="chart-card">
       <h3>Monthly Revenue Trend</h3>
 
-      <BarChart width={400} height={250} data={data}>
-        <XAxis dataKey="name"/>
-        <YAxis/>
-        <Tooltip/>
-        <Bar dataKey="revenue" fill="#10b981"/>
-      </BarChart>
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={data}>
+          <XAxis dataKey="month" />
+          <YAxis />
+          <Tooltip formatter={(value) => `₦${Number(value).toLocaleString("en-NG")}`} />
+          <Bar dataKey="amount" fill="#10b981" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import router from "./routes/index.js";
 import { pool } from "./config/db.js";
+import { warmOllamaModel } from "./services/aiClassifier.js";
 
 dotenv.config();
 
@@ -24,6 +25,14 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+
+      void warmOllamaModel()
+        .then(() => {
+          console.log("Ollama warm-up completed");
+        })
+        .catch((error) => {
+          console.warn("Ollama warm-up skipped:", error);
+        });
     });
   } catch (error) {
     console.error("Failed to connect to database:", error);

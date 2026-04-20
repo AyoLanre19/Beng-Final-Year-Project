@@ -1,12 +1,12 @@
 .pricing-wrapper {
-  padding: 90px 24px;
+  padding: clamp(48px, 7vw, 90px) 24px;
   max-width: 1200px;
   margin: auto;
   text-align: center;
 }
 
 .pricing-wrapper h2 {
-  font-size: 34px;
+  font-size: clamp(2rem, 4vw, 2.8rem);
   color: #2c3e60;
 }
 
@@ -14,16 +14,18 @@
   max-width: 700px;
   margin: 12px auto 40px;
   color: #6b7a99;
+  line-height: 1.7;
 }
 
-/* Toggle */
 .billing-toggle {
   display: inline-flex;
   align-items: center;
   gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
   padding: 12px 20px;
   border-radius: 16px;
-  margin-bottom: 60px;
+  margin-bottom: clamp(28px, 5vw, 60px);
 }
 
 .billing-toggle span {
@@ -36,7 +38,6 @@
   font-weight: 600;
 }
 
-/* Switch */
 .switch {
   position: relative;
   width: 42px;
@@ -70,11 +71,10 @@
   transform: translateX(20px);
 }
 
-/* Cards */
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 30px);
 }
 
 .pricing-card {
@@ -92,7 +92,7 @@
 }
 
 .price {
-  font-size: 32px;
+  font-size: clamp(1.8rem, 4vw, 2rem);
   margin: 8px 0;
 }
 
@@ -121,10 +121,9 @@
   color: #4b5d78;
 }
 
-/* Buttons */
-.btn-primary,
+.pricing-wrapper .btn-primary,
 .btn-gold,
-.btn-outline {
+.pricing-wrapper .btn-outline {
   padding: 14px;
   width: 100%;
   border-radius: 14px;
@@ -132,7 +131,7 @@
   font-size: 15px;
 }
 
-.btn-primary {
+.pricing-wrapper .btn-primary {
   background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: white;
 }
@@ -142,12 +141,11 @@
   color: #3b2f00;
 }
 
-.btn-outline {
+.pricing-wrapper .btn-outline {
   border: 1px solid #c7d2fe;
   background: transparent;
 }
 
-/* Badge */
 .badge {
   position: absolute;
   top: -14px;
@@ -155,9 +153,8 @@
   width: 120px;
 }
 
-/* Footer */
 .pricing-footer {
-  margin-top: 60px;
+  margin-top: clamp(36px, 5vw, 60px);
 }
 
 .secure {
@@ -165,30 +162,38 @@
   justify-content: center;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
-.brands {
+.pricing-wrapper .brands {
   display: flex;
   justify-content: center;
-  padding: 36px;
+  flex-wrap: wrap;
+  padding: 20px;
   margin-top: 18px;
 }
 
-.brands img {
-  height: 34px;
-  opacity: 0.7;
-}
-
-/* Responsive */
 @media (max-width: 1024px) {
   .pricing-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
+  .pricing-wrapper {
+    padding-inline: 16px;
+  }
+
   .pricing-grid {
     grid-template-columns: 1fr;
+  }
+
+  .pricing-card {
+    padding: 28px 20px;
+  }
+
+  .billing-toggle {
+    width: 100%;
   }
 }

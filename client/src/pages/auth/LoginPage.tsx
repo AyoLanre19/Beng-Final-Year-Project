@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/authService";
 import { clearStoredUser, type UserType } from "../../services/authService";
 import { clearStoredToken } from "../../services/apiClient";
@@ -9,6 +9,24 @@ import "../../styles/login.css";
 
 interface LoginPageProps {
   forcedPortal?: UserType;
+}
+
+function EmailIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 6h16v12H4z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="m5.5 7.5 6.5 5 6.5-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function LockIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M8 10V8a4 4 0 1 1 8 0v2" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
 }
 
 export default function LoginPage({ forcedPortal }: LoginPageProps) {
@@ -56,7 +74,6 @@ export default function LoginPage({ forcedPortal }: LoginPageProps) {
   }
 
   const redirectToDashboard = (portal: string) => {
-
     if (portal === "individual") navigate("/individual/dashboard");
     else if (portal === "sme") navigate("/sme/dashboard");
     else if (portal === "company") navigate("/company/dashboard");
@@ -89,82 +106,77 @@ export default function LoginPage({ forcedPortal }: LoginPageProps) {
     }
   };
 
-  const handleGoogle = () => {
-    setError("Google sign-in is not connected yet. Use email and password for now.");
-  };
+  const portalChip = selectedPortal === "company"
+    ? "Company Portal"
+    : selectedPortal === "sme"
+      ? "SME Portal"
+      : selectedPortal === "individual"
+        ? "Individual Portal"
+        : "Secure Login";
 
   return (
     <>
       <PublicNavbar />
 
       <main className="login-page">
-        <div className="login-wrapper">
-          <header className="login-hero">
-            <img src={loginpic} alt="Secure login" />
-          </header>
-
-          <section className="login-center">
-            <article className="login-card">
+        <section className="login-wrapper">
+          <article className="login-card">
+            <header className="login-hero">
+              <img src={loginpic} alt="Secure login" />
+              <span className="login-chip">{portalChip}</span>
               <h1 className="login-title">{portalHeading}</h1>
+              <p className="login-sub">{portalDescription}</p>
+              <p className="login-note">Use your email and password below for the fastest sign-in.</p>
+            </header>
 
-              <p className="login-sub">
-                {portalDescription}
-              </p>
+            <form onSubmit={handleLogin} className="login-form">
+              <label className="login-input-row">
+                <span className="input-icon" aria-hidden="true">
+                  <EmailIcon />
+                </span>
 
-              <button type="button" className="btn-google" onClick={handleGoogle}>
-                <img src="/assets/images/google-icon.png" className="icon" alt="Google icon" />
-                <span>Sign in with Google</span>
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                  required
+                />
+              </label>
+
+              <label className="login-input-row">
+                <span className="input-icon" aria-hidden="true">
+                  <LockIcon />
+                </span>
+
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                />
+              </label>
+
+              {error && <p className="login-alert">{error}</p>}
+
+              <button type="submit" className="login-primary-button" disabled={loading}>
+                {loading ? "Logging you in..." : "Login"}
               </button>
+            </form>
 
-              <div className="divider">or</div>
+            <div className="login-card-footer">
+              <span>Don&apos;t have an account?</span>
+              <Link to={signupHref}>{signupLabel}</Link>
+            </div>
 
-              <form onSubmit={handleLogin} className="login-form">
-                <label className="input-row">
-                  <img src="/assets/images/icon-email.png" className="input-icon" alt="Email icon" />
-
-                  <input
-                    type="email"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </label>
-
-                <label className="input-row">
-                  <img src="/assets/images/icon-lock.png" className="input-icon" alt="Lock icon" />
-
-                  <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </label>
-
-                {error && <p className="login-sub" style={{ color: "#c62828" }}>{error}</p>}
-
-                <div className="login-actions">
-                  <a href="/forgot-password">Forgot password?</a>
-                </div>
-
-                <button type="submit" className="btn-primary" disabled={loading}>
-                  {loading ? "Logging in..." : "Login"}
-                </button>
-              </form>
-
-              <p className="signup-line">
-                Don’t have an account?
-                <a href={signupHref}> {signupLabel}</a>
-              </p>
-
-              <p className="signup-line">
-                Demo login: `individual@example.com` / `Password123!`
-              </p>
-            </article>
-          </section>
-        </div>
+            <p className="login-demo">
+              Demo login: `individual@example.com` / `Password123!`
+            </p>
+          </article>
+        </section>
       </main>
     </>
   );

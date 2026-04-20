@@ -1,11 +1,11 @@
-export default function StatCard({ title, value }: any) {
+type StatCardProps = {
+  title: string;
+  value: string;
+};
+
+export default function StatCard({ title, value }: StatCardProps) {
   return (
-    <div style={{
-      background: "white",
-      padding: "20px",
-      borderRadius: "10px",
-      flex: 1
-    }}>
+    <div className="admin-stat-card">
       <p>{title}</p>
       <h2>{value}</h2>
     </div>

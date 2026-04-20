@@ -24,6 +24,7 @@ export default function ReviewFilePage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [filingId, setFilingId] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const loadSummary = async () => {
@@ -51,6 +52,7 @@ export default function ReviewFilePage() {
       setSubmitting(true);
       setError("");
       const result = await submitTaxFiling({
+        userType: "individual",
         taxPeriod: currentTaxPeriod(),
         totalIncome: summary.totalIncome,
         totalExpenses: summary.totalExpenses,
@@ -65,7 +67,7 @@ export default function ReviewFilePage() {
       });
 
       setFilingId(result.filingId);
-      setMessage(`Filing submitted successfully. Reference: ${result.referenceNumber}`);
+      setMessage(`Forecast report saved successfully. Reference: ${result.referenceNumber}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to submit filing right now.");
     } finally {
@@ -95,16 +97,19 @@ export default function ReviewFilePage() {
     : "Loading...";
 
   return (
-    <div className="ind-page">
-      <IndividualSidebar />
+    <div className={`ind-page ${sidebarOpen ? "sidebar-open" : ""}`}>
+      <IndividualSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="ind-main">
-        <Topbar />
+        <Topbar
+          onToggleSidebar={() => setSidebarOpen((open) => !open)}
+          isSidebarOpen={sidebarOpen}
+        />
 
         <div className="ind-content">
-          <h1 className="page-h1">File Tax</h1>
+          <h1 className="page-h1">Tax Forecast Review</h1>
           <p className="page-sub">
-            Review your tax summary and confirm to submit your tax filing to the tax authority.
+            Review your projected tax position from the uploaded statement period. This draft should be checked against full-year records before any final filing.
           </p>
 
           {loading ? (
@@ -114,32 +119,39 @@ export default function ReviewFilePage() {
           ) : (
             <>
               <div className="rf-card">
-                <h3 className="rf-title">Filing Summary</h3>
+                <h3 className="rf-title">Forecast Summary</h3>
 
                 <div className="rf-row">
-                  <span>Tax Period</span>
-                  <span>{currentTaxPeriod()}</span>
+                  <span>Observed Statement Months</span>
+                  <span>{summary?.monthsObserved ?? 0}</span>
                 </div>
 
                 <div className="rf-row">
-                  <span>Total Income Detected</span>
-                  <span>{formatCurrency(summary?.totalIncome ?? 0)}</span>
+                  <span>Observed Statement Income</span>
+                  <span>{formatCurrency(summary?.observedPeriodIncome ?? 0)}</span>
                 </div>
 
                 <div className="rf-row">
-                  <span>Total Tax Due</span>
-                  <span>{formatCurrency(summary?.totalTax ?? 0)}</span>
+                  <span>Projected Annual Tax</span>
+                  <span>{formatCurrency(summary?.annualTaxForecast ?? 0)}</span>
                 </div>
 
                 <div className="rf-row">
-                  <span>Total Relief</span>
+                  <span>Estimated Monthly Tax</span>
+                  <span>{formatCurrency(summary?.monthlyTaxEstimate ?? 0)}</span>
+                </div>
+
+                <div className="rf-row">
+                  <span>Projected Annual Relief</span>
                   <span>{formatCurrency(summary?.reliefAmount ?? 0)}</span>
                 </div>
 
                 <div className="rf-row danger">
-                  <span>Payment Status</span>
+                  <span>Projected Tax Position</span>
                   <span>{paymentStatus}</span>
                 </div>
+
+                <p className="tax-muted">{summary?.projectionNote}</p>
               </div>
 
               <div className="rf-card">
@@ -164,11 +176,11 @@ export default function ReviewFilePage() {
                   disabled={!checked || submitting}
                   onClick={handleSubmit}
                 >
-                  {submitting ? "Submitting..." : "Submit Filing"}
+                  {submitting ? "Saving..." : "Save Forecast"}
                 </button>
 
                 <button className="btn-outline" onClick={handleDownload}>
-                  Download Filing PDF
+                  Download Forecast PDF
                 </button>
               </div>
             </>

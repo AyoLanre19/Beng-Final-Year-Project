@@ -22,7 +22,9 @@ export interface DashboardMetrics {
   payrollTotal?: number;
   withholdingEstimate?: number;
   monthlyIncomeData: DashboardMetricRow[];
+  monthlyExpenseData?: DashboardMetricRow[];
   incomeSourceData: IncomeSourceRow[];
+  expenseBreakdownData?: IncomeSourceRow[];
 }
 
 export const getDashboardMetrics = async (userType?: string): Promise<DashboardMetrics> => {

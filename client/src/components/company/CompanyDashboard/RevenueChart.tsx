@@ -1,16 +1,13 @@
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from "recharts";
+import type { DashboardMetricRow } from "../../../services/dashboardService";
 
-const data = [
-  { month: "Jan", value: 25000000 },
-  { month: "Feb", value: 24000000 },
-  { month: "Mar", value: 30000000 },
-  { month: "Apr", value: 35000000 },
-  { month: "May", value: 45000000 },
-];
+type RevenueChartProps = {
+  data: DashboardMetricRow[];
+};
 
-export default function RevenueChart() {
+export default function RevenueChart({ data }: RevenueChartProps) {
   return (
     <div className="chart-card glass">
       <h4>Revenue Trend</h4>
@@ -19,11 +16,11 @@ export default function RevenueChart() {
         <LineChart data={data}>
           <XAxis dataKey="month" stroke="#9ca3af" />
           <YAxis stroke="#9ca3af" />
-          <Tooltip />
+          <Tooltip formatter={(value) => `₦${Number(value).toLocaleString("en-NG")}`} />
 
           <Line
             type="monotone"
-            dataKey="value"
+            dataKey="amount"
             stroke="#3b82f6"
             strokeWidth={3}
             dot={{ r: 4 }}

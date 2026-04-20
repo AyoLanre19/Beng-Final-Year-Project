@@ -1,11 +1,11 @@
 .company-pricing-wrapper {
-  padding: 80px 24px;
+  padding: clamp(48px, 7vw, 80px) 24px;
   max-width: 1200px;
   margin: auto;
   text-align: center;
 }
 
-.breadcrumb {
+.company-pricing-wrapper .breadcrumb {
   text-align: left;
   color: #8a99b5;
   font-size: 14px;
@@ -13,104 +13,116 @@
 }
 
 .company-pricing-wrapper h2 {
-  font-size: 34px;
+  font-size: clamp(2rem, 4vw, 2.8rem);
   color: #2c3e60;
 }
 
-.subtitle {
+.company-pricing-wrapper .subtitle {
   color: #6b7a99;
   margin: 10px auto 50px;
   max-width: 600px;
+  line-height: 1.7;
 }
 
-.pricing-grid {
+.company-pricing-wrapper .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 30px);
 }
 
-.pricing-card {
+.company-pricing-wrapper .pricing-card {
   padding: 36px 28px;
   position: relative;
 }
 
-.pricing-card img {
+.company-pricing-wrapper .pricing-card img {
   max-width: 100%;
   margin-bottom: 16px;
 }
 
-.price {
-  font-size: 30px;
+.company-pricing-wrapper .price {
+  font-size: clamp(1.8rem, 4vw, 2rem);
   margin: 8px 0;
 }
 
-.price span {
+.company-pricing-wrapper .price span {
   font-size: 14px;
 }
 
-.gold-text {
+.company-pricing-wrapper .gold-text {
   color: #d4a017;
 }
 
-.note {
+.company-pricing-wrapper .note {
   font-size: 13px;
   color: #7c8ca6;
 }
 
-.pricing-card ul {
+.company-pricing-wrapper .pricing-card ul {
   list-style: none;
   padding: 0;
   margin: 24px 0;
   text-align: left;
 }
 
-.pricing-card li {
+.company-pricing-wrapper .pricing-card li {
   margin-bottom: 10px;
   color: #4b5d78;
 }
 
-.badge {
+.company-pricing-wrapper .badge {
   position: absolute;
   top: -14px;
   right: 20px;
   width: 120px;
 }
 
-/* Buttons reuse existing styles */
-
-.pricing-footer {
-  margin-top: 60px;
+.company-pricing-wrapper .pricing-footer {
+  margin-top: clamp(36px, 5vw, 60px);
 }
 
-.secure {
+.company-pricing-wrapper .secure {
   display: flex;
   justify-content: center;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
-.brands {
+.company-pricing-wrapper .brands {
   display: flex;
   justify-content: center;
-  gap: 36px;
+  flex-wrap: wrap;
+  gap: 20px 36px;
   margin-top: 18px;
 }
 
-.brands img {
+.company-pricing-wrapper .brands img {
   height: 34px;
   opacity: 0.7;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
-  .pricing-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .company-pricing-wrapper .pricing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
-  .pricing-grid {
+  .company-pricing-wrapper {
+    padding-inline: 16px;
+  }
+
+  .company-pricing-wrapper .pricing-grid {
     grid-template-columns: 1fr;
+  }
+
+  .company-pricing-wrapper .pricing-card {
+    padding: 28px 20px;
+  }
+
+  .company-pricing-wrapper .breadcrumb {
+    text-align: center;
   }
 }

@@ -1,57 +1,46 @@
-interface Props{
-transactions:any[]
-}
+type ClassificationRow = {
+  date: string;
+  description: string;
+  amount: string;
+  category: string;
+};
 
-export default function AIClassificationTable({transactions}:Props){
+type Props = {
+  transactions: ClassificationRow[];
+};
 
-return(
+export default function AIClassificationTable({ transactions }: Props) {
+  return (
+    <div className="table-card">
+      <h3>Parsed Statement Preview</h3>
 
-<div className="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Detected Category</th>
+          </tr>
+        </thead>
 
-<h3>AI Classification</h3>
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Date</th>
-
-<th>Description</th>
-
-<th>Amount</th>
-
-<th>AI Category</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{transactions.map((t,i)=>(
-
-<tr key={i}>
-
-<td>{t.date}</td>
-
-<td>{t.description}</td>
-
-<td>{t.amount}</td>
-
-<td>{t.category}</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-)
-
+        <tbody>
+          {transactions.length > 0 ? (
+            transactions.map((transaction) => (
+              <tr key={`${transaction.date}-${transaction.description}-${transaction.amount}`}>
+                <td>{transaction.date}</td>
+                <td>{transaction.description}</td>
+                <td>{transaction.amount}</td>
+                <td>{transaction.category}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={4}>No parsed statement selected yet.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 }

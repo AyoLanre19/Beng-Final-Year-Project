@@ -1,23 +1,21 @@
-export default function SuggestedReliefs(){
+type SuggestedReliefsProps = {
+  items?: string[];
+};
 
-return(
+const fallbackItems = ["No relief hints yet. Upload or select a parsed statement first."];
 
-<div className="card">
+export default function SuggestedReliefs({ items }: SuggestedReliefsProps) {
+  const reliefs = items && items.length > 0 ? items : fallbackItems;
 
-<h3>Suggested Reliefs Detected</h3>
+  return (
+    <div className="card">
+      <h3>Suggested Reliefs Detected</h3>
 
-<ul>
-
-<li>✔ Pension contribution</li>
-
-<li>✔ Health insurance</li>
-
-<li>✔ PAYE deduction detected</li>
-
-</ul>
-
-</div>
-
-)
-
+      <ul>
+        {reliefs.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }

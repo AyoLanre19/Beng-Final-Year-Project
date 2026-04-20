@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signupUser, type UserType } from "../../services/authService";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser, signupUser, type UserType } from "../../services/authService";
+import individualHero from "../../assets/images/individualportal.jpg";
+import smeHero from "../../assets/images/smeportal.jpg";
 import "../../styles/auth.css";
 
 interface IndividualSignupSectionProps {
@@ -17,11 +19,21 @@ export default function IndividualSignupSection({ forcedPortal }: IndividualSign
   const [error, setError] = useState("");
 
   const portal: "individual" | "sme" = forcedPortal ?? "individual";
+  const heroImage = portal === "sme" ? smeHero : individualHero;
 
   const heading = portal === "sme" ? "Create Your SME Account" : "Create Your Individual Account";
   const description = portal === "sme"
     ? "Set up your SME portal to manage business revenue, expenses, and filing."
     : "Set up your individual portal to manage income, deductions, and tax filing.";
+
+  const redirectToDashboard = (userType: "individual" | "sme") => {
+    if (userType === "sme") {
+      navigate("/sme/dashboard");
+      return;
+    }
+
+    navigate("/individual/dashboard");
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,8 +56,9 @@ export default function IndividualSignupSection({ forcedPortal }: IndividualSign
         userType: portal,
       });
 
+      const loginResponse = await loginUser({ email, password });
       localStorage.setItem("portalType", response.data.user.userType);
-      navigate(`/${response.data.user.userType}/login`);
+      redirectToDashboard(loginResponse.data.user.userType as "individual" | "sme");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to create your account.");
     } finally {
@@ -56,60 +69,69 @@ export default function IndividualSignupSection({ forcedPortal }: IndividualSign
   return (
     <main className="auth-page">
       <section className="auth-wrapper">
-        <div className="auth-hero glass">
-          <img src="/assets/images/signup-hero.png" alt="Sign up illustration" />
+        <form className="auth-card auth-surface auth-flow-card" onSubmit={handleSignup}>
+          <div className="auth-hero">
+            <img src={heroImage} alt={portal === "sme" ? "SME signup" : "Individual signup"} />
+            <span className="auth-chip">{portal === "sme" ? "SME Portal" : "Individual Portal"}</span>
+            <h1>{heading}</h1>
+            <p>{description}</p>
+          </div>
 
-          <h1>{heading}</h1>
+          <div className="auth-copy">
+            <h2>{portal === "sme" ? "Business details" : "Personal details"}</h2>
+            <p>Use your email and password below. We&apos;ll sign you in immediately after your account is created.</p>
+          </div>
 
-          <p>{description}</p>
-        </div>
+          <div className="auth-fields">
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              autoComplete="name"
+              required
+            />
 
-        <form className="auth-card glass" onSubmit={handleSignup}>
-          <h3>{portal === "sme" ? "SME Sign Up" : "Individual Sign Up"}</h3>
-          <p>{portal === "sme" ? "Use your business contact details to create your SME workspace." : "Use your personal details to create your individual workspace."}</p>
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+            />
 
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-          />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+              required
+            />
 
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              autoComplete="new-password"
+              required
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          {error && <p className="auth-alert">{error}</p>}
 
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-
-          {error && <p className="switch" style={{ color: "#c62828" }}>{error}</p>}
-
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Creating Account..." : "Sign Up"}
+          <button type="submit" className="auth-primary-button" disabled={loading}>
+            {loading ? "Creating your account..." : "Create Account"}
           </button>
 
-          <p className="switch">
-            Already have an account?
-            <a href={`/${portal}/login`}> Login</a>
-          </p>
+          <p className="auth-helper">Takes less than a minute. You&apos;ll go straight to your dashboard.</p>
+
+          <div className="auth-card-footer">
+            <span>Already have an account?</span>
+            <Link to={`/${portal}/login`}>Login</Link>
+          </div>
         </form>
       </section>
     </main>

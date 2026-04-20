@@ -1,24 +1,46 @@
 import "./admin-layout.css";
 
-export default function AdminTopbar() {
+interface AdminTopbarProps {
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
+}
+
+export default function AdminTopbar({
+  onToggleSidebar,
+  isSidebarOpen = false,
+}: AdminTopbarProps) {
   return (
     <header className="admin-topbar">
-      <div className="admin-search">
-        <span className="admin-search__icon">⌕</span>
-        <input type="text" placeholder="Search" />
+      <div className="admin-topbar__left">
+        <button
+          type="button"
+          className="admin-menu-btn"
+          onClick={onToggleSidebar}
+          aria-label={isSidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isSidebarOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <div className="admin-search">
+          <span className="admin-search__icon">Q</span>
+          <input type="text" placeholder="Search" />
+        </div>
       </div>
 
       <div className="admin-topbar__right">
         <button className="admin-topbar__icon small-cyan" type="button">
-          ▣
+          RP
         </button>
 
         <button className="admin-topbar__icon small-purple" type="button">
-          ⌂
+          TX
         </button>
 
         <button className="admin-topbar__icon small-blue has-badge" type="button">
-          ✈
+          NT
           <span className="badge">4</span>
         </button>
 

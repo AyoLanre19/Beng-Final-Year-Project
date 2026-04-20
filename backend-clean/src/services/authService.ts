@@ -1,10 +1,7 @@
 import { randomUUID } from "crypto";
 import { pool } from "../config/db.js";
-import { hashPassword, comparePassword } from "../utils/hash.js";
+import { comparePassword, hashPassword } from "../utils/hash.js";
 
-/**
- * Type for signup input (individual / SME)
- */
 type SignupInput = {
   fullName: string;
   email: string;
@@ -12,25 +9,72 @@ type SignupInput = {
   userType: "individual" | "sme";
 };
 
-/**
- * Type for login input (all users)
- */
 type LoginInput = {
   email: string;
   password: string;
 };
 
-/**
- * SIGNUP FUNCTION
- * Creates a new individual or SME user
- */
+export type ProfileUpdateInput = {
+  userId: string;
+  displayName: string;
+  email: string;
+  phone?: string;
+};
+
+export type PasswordUpdateInput = {
+  userId: string;
+  currentPassword: string;
+  newPassword: string;
+};
+
+const SAFE_USER_FIELDS = `
+  id,
+  full_name,
+  company_name,
+  email,
+  phone,
+  user_type,
+  role,
+  is_verified,
+  created_at
+`;
+
+const getUserRecordById = async (userId: string) => {
+  const result = await pool.query(
+    `SELECT ${SAFE_USER_FIELDS}, password_hash
+     FROM users
+     WHERE id = $1`,
+    [userId]
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error("User not found");
+  }
+
+  return result.rows[0];
+};
+
+export const getCurrentUserProfile = async (userId: string) => {
+  const result = await pool.query(
+    `SELECT ${SAFE_USER_FIELDS}
+     FROM users
+     WHERE id = $1`,
+    [userId]
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error("User not found");
+  }
+
+  return result.rows[0];
+};
+
 export const signupUser = async ({
   fullName,
   email,
   password,
   userType,
 }: SignupInput) => {
-  // Check if user already exists
   const existingUser = await pool.query(
     "SELECT id FROM users WHERE email = $1",
     [email]
@@ -40,66 +84,106 @@ export const signupUser = async ({
     throw new Error("User with this email already exists");
   }
 
-  // Hash password
   const hashedPassword = await hashPassword(password);
-
-  // Generate unique ID
   const id = randomUUID();
 
-  // Insert user into database
   const result = await pool.query(
     `INSERT INTO users (id, full_name, email, password_hash, user_type, role)
      VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id, full_name, email, user_type, role, created_at`,
+     RETURNING ${SAFE_USER_FIELDS}`,
     [id, fullName, email, hashedPassword, userType, "user"]
   );
 
   return result.rows[0];
 };
 
-/**
- * LOGIN FUNCTION
- * Works for:
- * - individual
- * - sme
- * - company
- * - admin
- */
 export const loginUser = async ({ email, password }: LoginInput) => {
-  // Fetch user by email
   const result = await pool.query(
-    `SELECT id, full_name, company_name, email, password_hash, user_type, role, is_verified, created_at
+    `SELECT ${SAFE_USER_FIELDS}, password_hash
      FROM users
      WHERE email = $1`,
     [email]
   );
 
-  // If no user found
   if (result.rows.length === 0) {
     throw new Error("Invalid email or password");
   }
 
   const user = result.rows[0];
-
-  // Compare password
-  const passwordMatches = await comparePassword(
-    password,
-    user.password_hash
-  );
+  const passwordMatches = await comparePassword(password, user.password_hash);
 
   if (!passwordMatches) {
     throw new Error("Invalid email or password");
   }
 
-  // Return safe user data (no password)
   return {
     id: user.id,
     full_name: user.full_name,
     company_name: user.company_name,
     email: user.email,
+    phone: user.phone,
     user_type: user.user_type,
     role: user.role,
     is_verified: user.is_verified,
     created_at: user.created_at,
   };
+};
+
+export const updateUserProfile = async ({
+  userId,
+  displayName,
+  email,
+  phone,
+}: ProfileUpdateInput) => {
+  const existingUser = await getUserRecordById(userId);
+  const trimmedEmail = email.trim().toLowerCase();
+
+  if (trimmedEmail !== existingUser.email) {
+    const duplicate = await pool.query(
+      "SELECT id FROM users WHERE email = $1 AND id <> $2",
+      [trimmedEmail, userId]
+    );
+
+    if (duplicate.rows.length > 0) {
+      throw new Error("User with this email already exists");
+    }
+  }
+
+  const displayColumn = existingUser.user_type === "company" ? "company_name" : "full_name";
+  const trimmedDisplayName = displayName.trim();
+  const trimmedPhone = typeof phone === "string" && phone.trim().length > 0 ? phone.trim() : null;
+
+  const result = await pool.query(
+    `UPDATE users
+     SET ${displayColumn} = $1,
+         email = $2,
+         phone = $3
+     WHERE id = $4
+     RETURNING ${SAFE_USER_FIELDS}`,
+    [trimmedDisplayName, trimmedEmail, trimmedPhone, userId]
+  );
+
+  return result.rows[0];
+};
+
+export const updateUserPassword = async ({
+  userId,
+  currentPassword,
+  newPassword,
+}: PasswordUpdateInput) => {
+  const user = await getUserRecordById(userId);
+  const passwordMatches = await comparePassword(currentPassword, user.password_hash);
+
+  if (!passwordMatches) {
+    throw new Error("Current password is incorrect");
+  }
+
+  const hashedPassword = await hashPassword(newPassword);
+
+  await pool.query(
+    `UPDATE users
+     SET password_hash = $1
+     WHERE id = $2`,
+    [hashedPassword, userId]
+  );
 };

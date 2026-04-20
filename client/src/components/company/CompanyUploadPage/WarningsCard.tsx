@@ -1,16 +1,21 @@
-export default function WarningsCard() {
+type WarningsCardProps = {
+  warnings?: string[];
+};
+
+const fallbackWarnings = ["No validation warnings yet."];
+
+export default function WarningsCard({ warnings }: WarningsCardProps) {
+  const items = warnings && warnings.length > 0 ? warnings : fallbackWarnings;
+
   return (
     <div className="warnings glass">
-
-      <h4>⚠ Validation Warnings</h4>
+      <h4>Validation Warnings</h4>
 
       <ul>
-        <li>Large Unreconciled Transfers</li>
-        <li>Possible Dividend Payment Detected</li>
-        <li>Missing Withholding Tax</li>
-        <li>VAT Rate Inconsistency</li>
+        {items.map((warning) => (
+          <li key={warning}>{warning}</li>
+        ))}
       </ul>
-
     </div>
   );
 }

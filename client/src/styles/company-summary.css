@@ -68,3 +68,30 @@
   padding: 12px 20px;
   border-radius: 8px;
 }
+
+@media (max-width: 768px) {
+  .hero-value {
+    font-size: 32px;
+  }
+
+  .supporting-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table .row {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .actions-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    margin-right: 0;
+  }
+}

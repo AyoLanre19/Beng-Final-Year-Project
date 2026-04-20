@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { JSX } from "react";
 import { useNavigate } from "react-router-dom";
-
 import IndividualSidebar from "../../components/individual/IndividualSidebar";
 import Topbar from "../../components/individual/Topbar";
 import MetricCard from "../../components/individual/MetricCard";
-import { IncomeLine, IncomeDonut } from "../../components/individual/Charts";
-import { getStoredUser } from "../../services/authService";
-import { getDashboardMetrics, type DashboardMetrics } from "../../services/dashboardService";
-
+import { IncomeDonut, IncomeLine } from "../../components/individual/Charts";
+import {
+  USER_CHANGED_EVENT,
+  getStoredUser,
+  getUserDisplayName,
+} from "../../services/authService";
+import {
+  getDashboardMetrics,
+  type DashboardMetrics,
+} from "../../services/dashboardService";
 import "../../styles/individual-dashboard.css";
 
-const formatCurrency = (value: number) => `₦${value.toLocaleString("en-NG")}`;
+const formatCurrency = (value: number) => `N${value.toLocaleString("en-NG")}`;
 
 const formatPaymentStatus = (status: DashboardMetrics["paymentStatus"]) => {
   if (status === "underpaid") return "Underpaid";
@@ -28,18 +33,20 @@ const formatRiskLabel = (riskScore: number) => {
 
 export default function IndividualDashboard(): JSX.Element {
   const navigate = useNavigate();
-  const storedUser = getStoredUser();
-
-  const [profileOpen, setProfileOpen] = useState<boolean>(false);
-  const [name, setName] = useState<string>(storedUser?.fullName || "Ifeanyi");
-  const [email, setEmail] = useState<string>(storedUser?.email || "ifeanyi@example.com");
-  const [password, setPassword] = useState<string>("");
+  const [displayName, setDisplayName] = useState(() => getUserDisplayName(getStoredUser()));
   const [dashboard, setDashboard] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const openProfile = (): void => setProfileOpen(true);
-  const closeProfile = (): void => setProfileOpen(false);
+  useEffect(() => {
+    const syncUserName = () => {
+      setDisplayName(getUserDisplayName(getStoredUser()));
+    };
+
+    window.addEventListener(USER_CHANGED_EVENT, syncUserName);
+    return () => window.removeEventListener(USER_CHANGED_EVENT, syncUserName);
+  }, []);
 
   useEffect(() => {
     const loadDashboard = async () => {
@@ -58,16 +65,19 @@ export default function IndividualDashboard(): JSX.Element {
   }, []);
 
   return (
-    <div className="ind-page">
-      <IndividualSidebar />
+    <div className={`ind-page ${sidebarOpen ? "sidebar-open" : ""}`}>
+      <IndividualSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="ind-main">
-        <Topbar onOpenProfile={openProfile} />
+        <Topbar
+          onToggleSidebar={() => setSidebarOpen((open) => !open)}
+          isSidebarOpen={sidebarOpen}
+        />
 
         <div className="ind-content">
           <h1 className="page-h1">Dashboard</h1>
 
-          <p className="page-sub">Welcome back, {name}!</p>
+          <p className="page-sub">Welcome back, {displayName}!</p>
           {error && <p className="page-sub" style={{ color: "#c62828" }}>{error}</p>}
 
           {loading ? (
@@ -138,46 +148,6 @@ export default function IndividualDashboard(): JSX.Element {
           )}
         </div>
       </div>
-
-      {profileOpen && (
-        <div className="profile-modal-backdrop" onClick={closeProfile}>
-          <div
-            className="profile-modal"
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
-          >
-            <h3>Edit Profile</h3>
-
-            <label className="label">Full name</label>
-            <input
-              value={name}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
-            />
-
-            <label className="label">Email</label>
-            <input
-              value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-            />
-
-            <label className="label">New password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-            />
-
-            <div className="modal-actions">
-              <button className="btn-secondary" onClick={closeProfile}>
-                Cancel
-              </button>
-
-              <button className="btn-primary" onClick={closeProfile}>
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -2,7 +2,11 @@ import { Router } from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { uploadBankStatement } from "../controllers/uploadController.js";
+import {
+  getUploadHistory,
+  getUploadStatus,
+  uploadBankStatement,
+} from "../controllers/uploadController.js";
 import { authenticate } from "../middleware/auth.js";
 
 const router = Router();
@@ -53,6 +57,8 @@ const upload = multer({
   },
 });
 
+router.get("/history", authenticate, getUploadHistory);
+router.get("/:documentId/status", authenticate, getUploadStatus);
 router.post("/", authenticate, upload.single("statement"), uploadBankStatement);
 
 export default router;

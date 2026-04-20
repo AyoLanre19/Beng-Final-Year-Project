@@ -1,9 +1,16 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { clearStoredUser } from "../../services/authService";
-import { clearStoredToken } from "../../services/apiClient";
+import { logoutUser } from "../../services/authService";
 import "../../styles/company-sidebar.css";
 
-export default function CompanySidebar() {
+interface CompanySidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function CompanySidebar({
+  isOpen = false,
+  onClose,
+}: CompanySidebarProps) {
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -11,56 +18,78 @@ export default function CompanySidebar() {
   const isActive = (path: string) => pathname === path;
 
   const handleLogout = () => {
-    clearStoredToken();
-    clearStoredUser();
-    localStorage.removeItem("portalType");
-    localStorage.removeItem("companyVerified");
+    logoutUser();
     navigate("/company/login");
+    onClose?.();
   };
 
   return (
-    <aside className="company-sidebar">
+    <>
+      <button
+        type="button"
+        className={`company-sidebar-backdrop ${isOpen ? "visible" : ""}`}
+        aria-label="Close navigation menu"
+        onClick={onClose}
+      />
 
-      <div className="sidebar-logo">
-        <span>Logo</span>
-      </div>
+      <aside className={`company-sidebar ${isOpen ? "is-open" : ""}`}>
 
-      <nav className="sidebar-menu">
+        <div className="company-sidebar-head">
+          <div className="sidebar-logo">
+            <span>Logo</span>
+          </div>
 
-        <Link
-          to="/company/dashboard"
-          className={isActive("/company/dashboard") ? "active" : ""}
-        >
-          Dashboard
-        </Link>
+          <button
+            type="button"
+            className="company-sidebar-close"
+            aria-label="Close navigation menu"
+            onClick={onClose}
+          >
+            x
+          </button>
+        </div>
 
-        <Link
-          to="/company/upload"
-          className={isActive("/company/upload") ? "active" : ""}
-        >
-          Financial Data Upload
-        </Link>
+        <nav className="sidebar-menu">
 
-        <Link
-          to="/company/tax-summary"
-          className={isActive("/company/tax-summary") ? "active" : ""}
-        >
-          Tax Summary
-        </Link>
+          <Link
+            to="/company/dashboard"
+            className={isActive("/company/dashboard") ? "active" : ""}
+            onClick={onClose}
+          >
+            Dashboard
+          </Link>
 
-        <Link
-          to="/company/filing"
-          className={isActive("/company/filing") ? "active" : ""}
-        >
-          Review & File
-        </Link>
+          <Link
+            to="/company/upload"
+            className={isActive("/company/upload") ? "active" : ""}
+            onClick={onClose}
+          >
+            Financial Data Upload
+          </Link>
 
-      </nav>
+          <Link
+            to="/company/tax-summary"
+            className={isActive("/company/tax-summary") ? "active" : ""}
+            onClick={onClose}
+          >
+            Tax Summary
+          </Link>
 
-      <div className="sidebar-footer">
-        <button type="button" onClick={handleLogout}>Log out</button>
-      </div>
+          <Link
+            to="/company/filing"
+            className={isActive("/company/filing") ? "active" : ""}
+            onClick={onClose}
+          >
+            Review & File
+          </Link>
 
-    </aside>
+        </nav>
+
+        <div className="sidebar-footer">
+          <button type="button" onClick={handleLogout}>Log out</button>
+        </div>
+
+      </aside>
+    </>
   );
 }

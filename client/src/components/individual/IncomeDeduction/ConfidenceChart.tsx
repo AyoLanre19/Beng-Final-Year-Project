@@ -1,70 +1,61 @@
-import { PieChart, Pie, Cell } from "recharts"
+import { Cell, Pie, PieChart } from "recharts";
 
-const data = [
-{ name:"Salary", value:60 },
-{ name:"Freelance", value:25 },
-{ name:"Other", value:15 }
-]
+type ConfidenceChartProps = {
+  averageConfidence?: number | null;
+  segments?: Array<{
+    name: string;
+    value: number;
+  }>;
+};
 
-const COLORS = ["#4f7cff","#6fa4ff","#c7d6ff"]
+const fallbackSegments = [
+  { name: "No data", value: 1 },
+];
 
-export default function ConfidenceChart(){
+const COLORS = ["#4f7cff", "#6fa4ff", "#c7d6ff"];
 
-return(
+export default function ConfidenceChart({
+  averageConfidence,
+  segments,
+}: ConfidenceChartProps) {
+  const data = segments && segments.length > 0 ? segments : fallbackSegments;
+  const centerLabel =
+    averageConfidence !== null && averageConfidence !== undefined
+      ? `${Math.round(averageConfidence * 100)}%`
+      : "N/A";
 
-<div className="card chart-card">
+  return (
+    <div className="card chart-card">
+      <h3>Detected Category Mix</h3>
 
-<h3>AI Confidence</h3>
+      <div className="chart-layout">
+        <div className="chart-legend">
+          {data.map((entry, index) => (
+            <div className="legend-item" key={entry.name}>
+              <span className="dot" style={{ background: COLORS[index % COLORS.length] }} />
+              {entry.name}
+            </div>
+          ))}
+        </div>
 
-<div className="chart-layout">
+        <div className="chart-box">
+          <PieChart width={160} height={160}>
+            <Pie
+              data={data}
+              dataKey="value"
+              innerRadius={50}
+              outerRadius={70}
+              paddingAngle={3}
+            >
+              {data.map((entry, index) => (
+                <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+          </PieChart>
 
-<div className="chart-legend">
-
-<div className="legend-item">
-<span className="dot salary"></span>
-Salary
-</div>
-
-<div className="legend-item">
-<span className="dot freelance"></span>
-Freelance
-</div>
-
-<div className="legend-item">
-<span className="dot other"></span>
-Other
-</div>
-
-</div>
-
-<div className="chart-box">
-
-<PieChart width={160} height={160}>
-
-<Pie
-data={data}
-dataKey="value"
-innerRadius={50}
-outerRadius={70}
-paddingAngle={3}
->
-
-{data.map((entry,index)=>(
-<Cell key={index} fill={COLORS[index]} />
-))}
-
-</Pie>
-
-</PieChart>
-
-<div className="chart-center">95%</div>
-
-</div>
-
-</div>
-
-</div>
-
-)
-
+          <div className="chart-center">{centerLabel}</div>
+        </div>
+      </div>
+    </div>
+  );
 }

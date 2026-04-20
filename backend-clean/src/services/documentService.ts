@@ -47,3 +47,15 @@ export const createDocument = async ({
 
   return result.rows[0];
 };
+
+export const updateDocumentStatus = async (
+  documentId: string,
+  uploadStatus: string
+): Promise<void> => {
+  await pool.query(
+    `UPDATE documents
+     SET upload_status = $1
+     WHERE id = $2`,
+    [uploadStatus, documentId]
+  );
+};

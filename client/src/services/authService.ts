@@ -1,16 +1,30 @@
-import { apiClient, storeToken } from "./apiClient";
+import { apiClient, clearStoredToken, storeToken } from "./apiClient";
 
 export type UserType = "individual" | "sme" | "company";
 
-interface StoredUser {
+export interface StoredUser {
   id: string;
   fullName: string;
+  companyName?: string;
+  displayName: string;
   email: string;
+  phone?: string;
   userType: UserType;
   role: string;
 }
 
+type RawUser = {
+  id: string;
+  full_name?: string | null;
+  company_name?: string | null;
+  email: string;
+  phone?: string | null;
+  user_type: string;
+  role: string;
+};
+
 const USER_STORAGE_KEY = "taxSystemUser";
+export const USER_CHANGED_EVENT = "tax-system-user-changed";
 
 function getAuthErrorMessage(error: unknown, fallback: string): string {
   if (typeof error === "object" && error !== null && "response" in error) {
@@ -27,9 +41,37 @@ function getAuthErrorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
+function emitUserChanged(): void {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent(USER_CHANGED_EVENT));
+  }
+}
+
+function normaliseUser(raw: RawUser): StoredUser {
+  const fullName = raw.full_name?.trim() || raw.company_name?.trim() || "";
+  const companyName = raw.company_name?.trim() || undefined;
+
+  return {
+    id: raw.id,
+    fullName,
+    companyName,
+    displayName: fullName || raw.email,
+    email: raw.email,
+    phone: raw.phone?.trim() || undefined,
+    userType: raw.user_type as UserType,
+    role: raw.role,
+  };
+}
+
+export const getUserDisplayName = (user: StoredUser | null): string => {
+  if (!user) return "Account";
+  return user.displayName || user.fullName || user.email;
+};
+
 export const storeUser = (user: StoredUser): void => {
   if (typeof window !== "undefined") {
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+    emitUserChanged();
   }
 };
 
@@ -37,6 +79,7 @@ export const getStoredUser = (): StoredUser | null => {
   if (typeof window === "undefined") return null;
   const raw = localStorage.getItem(USER_STORAGE_KEY);
   if (!raw) return null;
+
   try {
     return JSON.parse(raw) as StoredUser;
   } catch {
@@ -47,34 +90,19 @@ export const getStoredUser = (): StoredUser | null => {
 export const clearStoredUser = (): void => {
   if (typeof window !== "undefined") {
     localStorage.removeItem(USER_STORAGE_KEY);
+    emitUserChanged();
   }
 };
 
-interface AuthUser {
-  id: string;
-  fullName: string;
-  email: string;
-  userType: UserType;
-  role: string;
-}
+export const logoutUser = (): void => {
+  clearStoredToken();
+  clearStoredUser();
 
-function normaliseUser(raw: {
-  id: string;
-  full_name: string;
-  email: string;
-  user_type: string;
-  role: string;
-}): AuthUser {
-  return {
-    id: raw.id,
-    fullName: raw.full_name,
-    email: raw.email,
-    userType: raw.user_type as UserType,
-    role: raw.role,
-  };
-}
-
-// ─── Signup ────────────────────────────────────────────────────────────────
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("portalType");
+    localStorage.removeItem("companyVerified");
+  }
+};
 
 export interface SignupInput {
   fullName: string;
@@ -86,11 +114,11 @@ export interface SignupInput {
 
 export const signupUser = async (
   input: SignupInput
-): Promise<{ data: { message: string; user: AuthUser } }> => {
+): Promise<{ data: { message: string; user: StoredUser } }> => {
   try {
     const response = await apiClient.post<{
       message: string;
-      user: { id: string; full_name: string; email: string; user_type: string; role: string };
+      user: RawUser;
     }>("/auth/signup", {
       fullName: input.fullName,
       email: input.email,
@@ -104,8 +132,6 @@ export const signupUser = async (
   }
 };
 
-// ─── Login ─────────────────────────────────────────────────────────────────
-
 export interface LoginInput {
   email: string;
   password: string;
@@ -113,12 +139,12 @@ export interface LoginInput {
 
 export const loginUser = async (
   input: LoginInput
-): Promise<{ data: { message: string; token: string; user: AuthUser } }> => {
+): Promise<{ data: { message: string; token: string; user: StoredUser } }> => {
   try {
     const response = await apiClient.post<{
       message: string;
       token: string;
-      user: { id: string; full_name: string; email: string; user_type: string; role: string };
+      user: RawUser;
     }>("/auth/login", input);
 
     const user = normaliseUser(response.data.user);
@@ -130,8 +156,6 @@ export const loginUser = async (
     throw new Error(getAuthErrorMessage(error, "Unable to login right now."));
   }
 };
-
-// ─── Company verification ──────────────────────────────────────────────────
 
 export interface CompanyVerifyInput {
   companyName: string;
@@ -149,5 +173,51 @@ export const verifyCompany = async (
     return { data: { message: response.data.message } };
   } catch (error) {
     throw new Error(getAuthErrorMessage(error, "Unable to submit company verification."));
+  }
+};
+
+export const fetchCurrentUser = async (): Promise<{ data: { message: string; user: StoredUser } }> => {
+  try {
+    const response = await apiClient.get<{ message: string; user: RawUser }>("/auth/me");
+    const user = normaliseUser(response.data.user);
+    storeUser(user);
+    return { data: { message: response.data.message, user } };
+  } catch (error) {
+    throw new Error(getAuthErrorMessage(error, "Unable to load your account details."));
+  }
+};
+
+export interface UpdateProfileInput {
+  displayName: string;
+  email: string;
+  phone?: string;
+}
+
+export const updateCurrentUserProfile = async (
+  input: UpdateProfileInput
+): Promise<{ data: { message: string; user: StoredUser } }> => {
+  try {
+    const response = await apiClient.put<{ message: string; user: RawUser }>("/auth/me", input);
+    const user = normaliseUser(response.data.user);
+    storeUser(user);
+    return { data: { message: response.data.message, user } };
+  } catch (error) {
+    throw new Error(getAuthErrorMessage(error, "Unable to update your profile."));
+  }
+};
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export const changeCurrentUserPassword = async (
+  input: ChangePasswordInput
+): Promise<{ data: { message: string } }> => {
+  try {
+    const response = await apiClient.put<{ message: string }>("/auth/change-password", input);
+    return { data: { message: response.data.message } };
+  } catch (error) {
+    throw new Error(getAuthErrorMessage(error, "Unable to change your password."));
   }
 };

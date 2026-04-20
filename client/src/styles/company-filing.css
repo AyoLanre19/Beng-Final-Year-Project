@@ -123,3 +123,22 @@
   font-size: 12px;
   color: #6b7280;
 }
+
+@media (max-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .success-panel {
+    padding: 28px 20px;
+  }
+
+  .success-actions {
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+}

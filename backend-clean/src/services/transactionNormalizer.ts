@@ -35,16 +35,16 @@ const normalizeDate = (value?: string | null): string | null => {
 
   if (!trimmed) return null;
 
-  const parsed = new Date(trimmed);
-
-  if (!Number.isNaN(parsed.getTime())) {
-    return parsed.toISOString().split("T")[0];
-  }
-
   const slashMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if (slashMatch) {
     const [, day, month, year] = slashMatch;
     return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  }
+
+  const parsed = new Date(trimmed);
+
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString().split("T")[0];
   }
 
   return null;

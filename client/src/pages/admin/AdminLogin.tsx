@@ -1,44 +1,50 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/admin-auth.css";
+import { loginUser, logoutUser } from "../../services/authService";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🔐 MVP fake auth (replace with backend later)
-    if (email === "admin@example.com" && password === "admin123") {
-      localStorage.setItem(
-        "token",
-        "fake-jwt-token"
-      );
+    try {
+      setLoading(true);
+      setError("");
+      const response = await loginUser({ email, password });
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ role: "admin", email })
-      );
+      if (response.data.user.role !== "admin") {
+        logoutUser();
+        setError("This account is not authorized for admin access.");
+        return;
+      }
 
       navigate("/admin/dashboard");
-    } else {
-      alert("Invalid admin credentials");
+    } catch (loginError) {
+      setError(
+        loginError instanceof Error
+          ? loginError.message
+          : "Unable to login to the admin portal."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="admin-auth-page">
       <div className="admin-auth-card glass">
-
-        {/* Logo */}
         <div className="logo-box">Logo</div>
 
         <h1>Admin Login</h1>
         <p className="subtitle">
-          MVP admin authentication for tax automation
+          Secure admin authentication for live platform management
         </p>
 
         <div className="form-box">
@@ -66,26 +72,28 @@ export default function AdminLogin() {
               <span>Remember me</span>
             </div>
 
-            <button type="submit">Sign In</button>
+            <button type="submit" disabled={loading}>
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
           </form>
 
-          <p className="forgot">Forgot password?</p>
+          {error ? <p className="forgot" style={{ color: "#c62828" }}>{error}</p> : null}
 
           <div className="secure-box">
-            🔒 Secure Admin Access Only  
+            🔒 Secure Admin Access Only
             <br />
             <small>
-              Use your admin email and password to access.
+              Use an account with the admin role stored in the database.
             </small>
           </div>
         </div>
 
         <p className="note">
-          ⚠️ For security, always use strong passwords and keep them confidential.
+          Admin actions now use the real backend and database records.
         </p>
 
         <p className="footer">
-          MVP Tax Automation – Secure Admin Access
+          Tax Automation Platform - Admin Access
         </p>
       </div>
     </div>

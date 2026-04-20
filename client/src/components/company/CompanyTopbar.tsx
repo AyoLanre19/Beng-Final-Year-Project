@@ -1,38 +1,38 @@
+import PortalAccountControls from "../portal/PortalAccountControls";
 import "../../styles/company-topbar.css";
 
-export default function CompanyTopbar() {
+interface CompanyTopbarProps {
+  onToggleSidebar?: () => void;
+  isSidebarOpen?: boolean;
+}
+
+export default function CompanyTopbar({
+  onToggleSidebar,
+  isSidebarOpen = false,
+}: CompanyTopbarProps) {
   return (
     <header className="company-topbar">
+      <div className="company-topbar__start">
+        <button
+          type="button"
+          className="company-menu-btn"
+          onClick={onToggleSidebar}
+          aria-label={isSidebarOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={isSidebarOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
 
-      {/* SEARCH */}
-      <input
-        type="text"
-        placeholder="Search"
-        className="search-input"
-      />
-
-      {/* ACTIONS */}
-      <div className="topbar-actions">
-
-        <div className="icon-box">📊</div>
-        <div className="icon-box">📩</div>
-
-        {/* 🔔 NO RED DOT ANYMORE */}
-        <div className="icon-box">
-          🔔
-        </div>
-
-        {/* USER */}
-        <div className="user-box">
-          <img
-            src="/assets/images/avatar.png"
-            alt="user"
-          />
-          <span>Ifeanyi</span>
-        </div>
-
+        <input
+          type="text"
+          placeholder="Search reports, documents, and filings"
+          className="search-input"
+        />
       </div>
 
+      <PortalAccountControls portal="company" />
     </header>
   );
 }

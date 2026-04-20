@@ -1,38 +1,32 @@
 import {
-  PieChart, Pie, Cell, ResponsiveContainer
+  PieChart, Pie, Cell, ResponsiveContainer,
 } from "recharts";
+import type { IncomeSourceRow } from "../../../services/dashboardService";
 
-const data = [
-  { name: "Payroll", value: 40 },
-  { name: "Operations", value: 25 },
-  { name: "Marketing", value: 15 },
-  { name: "Other", value: 20 },
-];
+type ExpenseChartProps = {
+  data: IncomeSourceRow[];
+};
 
-const COLORS = ["#3b82f6", "#60a5fa", "#93c5fd", "#c7d2fe"];
+const COLORS = ["#3b82f6", "#60a5fa", "#93c5fd", "#c7d2fe", "#1d4ed8", "#bfdbfe"];
 
-export default function ExpenseChart() {
+export default function ExpenseChart({ data }: ExpenseChartProps) {
   return (
     <div className="chart-card glass">
-
       <h4>Expense Breakdown</h4>
 
       <div className="expense-content">
-
-        {/* LEFT LEGEND */}
         <div className="legend">
           {data.map((item, index) => (
-            <div key={index} className="legend-item">
+            <div key={item.label} className="legend-item">
               <span
                 className="dot"
-                style={{ background: COLORS[index] }}
+                style={{ background: COLORS[index % COLORS.length] }}
               ></span>
-              {item.name}
+              {item.label}
             </div>
           ))}
         </div>
 
-        {/* RIGHT PIE */}
         <div className="pie-wrap">
           <ResponsiveContainer width={160} height={160}>
             <PieChart>
@@ -41,18 +35,16 @@ export default function ExpenseChart() {
                 innerRadius={45}
                 outerRadius={70}
                 paddingAngle={2}
-                dataKey="value"
+                dataKey="amount"
               >
-                {data.map((_, index) => (
-                  <Cell key={index} fill={COLORS[index]} />
+                {data.map((item, index) => (
+                  <Cell key={item.label} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
             </PieChart>
           </ResponsiveContainer>
         </div>
-
       </div>
-
     </div>
   );
 }

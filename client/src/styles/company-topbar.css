@@ -1,24 +1,53 @@
 .company-topbar {
-  height: 70px;
+  min-height: 70px;
   background: rgba(255,255,255,0.7);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #eef2ff;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 0 30px;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 30px;
 }
 
-/* SEARCH */
-.search-input {
-  width: 280px;
-  padding: 10px 14px;
+.company-topbar__start {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
 
+.company-menu-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #eef3ff;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.company-menu-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.search-input {
+  width: min(100%, 280px);
+  padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid #e5e7eb;
-
   outline: none;
   transition: 0.2s;
 }
@@ -27,34 +56,32 @@
   border-color: #3b82f6;
 }
 
-/* ACTIONS */
 .topbar-actions {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
-/* ICONS */
 .icon-box {
   width: 36px;
   height: 36px;
-
   background: #eef3ff;
   border-radius: 10px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   cursor: pointer;
   transition: 0.2s;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb;
 }
 
 .icon-box:hover {
   background: #dbeafe;
 }
 
-/* USER */
 .user-box {
   display: flex;
   align-items: center;
@@ -71,4 +98,40 @@
 .user-box span {
   font-size: 14px;
   font-weight: 500;
-  color: #1f2937;}
+  color: #1f2937;
+}
+
+@media (max-width: 1024px) {
+  .company-menu-btn {
+    display: inline-flex;
+  }
+
+  .company-topbar {
+    padding: 16px 20px;
+  }
+
+  .company-topbar__start {
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .topbar-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar-actions {
+    justify-content: center;
+  }
+
+  .user-box {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+}

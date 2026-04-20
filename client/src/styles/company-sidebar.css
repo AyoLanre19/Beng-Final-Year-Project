@@ -3,24 +3,57 @@
   background: rgba(255,255,255,0.7);
   backdrop-filter: blur(12px);
   border-right: 1px solid #eef2ff;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 20px;
+  z-index: 12;
 }
 
-/* LOGO */
+.company-sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .sidebar-logo {
   font-weight: 600;
-  margin-bottom: 30px;
 }
 
-/* MENU */
+.company-sidebar-close {
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: #eef3ff;
+  color: #2563eb;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.company-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  border: none;
+  background: rgba(15, 23, 42, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 11;
+}
+
+.company-sidebar-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .sidebar-menu {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 30px;
 }
 
 .sidebar-menu a {
@@ -31,15 +64,61 @@
   font-size: 14px;
 }
 
-/* ACTIVE */
 .sidebar-menu a.active {
   background: #eef3ff;
   color: #3b82f6;
   font-weight: 500;
 }
 
-/* FOOTER */
 .sidebar-footer {
   font-size: 13px;
   color: #6b7280;
+  margin-top: 24px;
+}
+
+.sidebar-footer button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #eef3ff;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .company-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 86vw);
+    height: 100dvh;
+    transform: translateX(-108%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    border-right: 1px solid #eef2ff;
+    border-bottom: none;
+    border-radius: 0 22px 22px 0;
+  }
+
+  .company-sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .company-sidebar-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .company-sidebar {
+    padding: 18px;
+  }
+
+  .sidebar-menu a {
+    width: 100%;
+  }
 }

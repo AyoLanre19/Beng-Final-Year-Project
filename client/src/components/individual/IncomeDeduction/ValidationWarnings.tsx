@@ -1,21 +1,23 @@
-export default function ValidationWarnings(){
+type ValidationWarningsProps = {
+  warnings?: string[];
+};
 
-return(
+const fallbackWarnings = ["No validation warnings yet."];
 
-<div className="card">
+export default function ValidationWarnings({
+  warnings,
+}: ValidationWarningsProps) {
+  const items = warnings && warnings.length > 0 ? warnings : fallbackWarnings;
 
-<h3>Validation Warnings</h3>
+  return (
+    <div className="card">
+      <h3>Validation Warnings</h3>
 
-<ul>
-
-<li>⚠ Possible freelance income</li>
-
-<li>⚠ PAYE missing</li>
-
-</ul>
-
-</div>
-
-)
-
+      <ul>
+        {items.map((warning) => (
+          <li key={warning}>{warning}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }

@@ -1,67 +1,68 @@
 .about-wrapper {
-  padding: 60px 24px;
+  padding: clamp(40px, 6vw, 60px) 24px;
   max-width: 1200px;
   margin: auto;
 }
 
-/* HERO */
 .about-hero {
-  display: flex;
-  justify-content: space-between;
-  padding: 60px;
-  gap: 40px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  align-items: center;
+  padding: clamp(28px, 5vw, 60px);
+  gap: clamp(24px, 4vw, 40px);
 }
 
 .about-hero-left h1 {
-  font-size: 38px;
+  font-size: clamp(2rem, 4.2vw, 3rem);
   color: #2c3e60;
+  line-height: 1.15;
 }
 
 .about-hero-left p {
   margin-top: 14px;
   color: #6b7a99;
+  line-height: 1.7;
+}
+
+.about-hero-right {
+  display: flex;
+  justify-content: center;
 }
 
 .about-hero-right img {
-  max-width: 420px;
+  width: min(100%, 420px);
 }
 
-/* CHALLENGES */
-.about-challenges {
-  margin-top: 80px;
+.about-challenges,
+.about-mission {
+  margin-top: clamp(56px, 8vw, 90px);
   text-align: center;
 }
 
-.challenge-grid {
+.challenge-grid,
+.values-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 28px);
   margin-top: 40px;
 }
 
-.challenge-card img {
+.challenge-card,
+.value-card {
+  padding: 24px;
+}
+
+.challenge-card img,
+.value-card img {
   width: 100%;
   max-height: 160px;
   object-fit: contain;
+  margin-bottom: 16px;
 }
 
-/* MISSION */
-.about-mission {
-  margin-top: 90px;
-  text-align: center;
-}
-
-.values-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
-  margin-top: 40px;
-}
-
-/* CTA */
 .about-cta {
-  margin-top: 90px;
-  padding: 60px;
+  margin-top: clamp(56px, 8vw, 90px);
+  padding: clamp(32px, 6vw, 60px);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -76,26 +77,25 @@
   z-index: -1;
 }
 
-/* Responsive */
 @media (max-width: 1024px) {
   .about-hero {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     text-align: center;
   }
 
   .challenge-grid,
   .values-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
+  .about-wrapper {
+    padding-inline: 16px;
+  }
+
   .challenge-grid,
   .values-grid {
     grid-template-columns: 1fr;
-  }
-
-  .about-hero-left h1 {
-    font-size: 28px;
   }
 }

@@ -3,8 +3,9 @@ type Props = {
   revenue: number;
   expenses: number;
   taxRate: number;
-  outputVAT: number;
-  inputVAT: number;
+  monthlyTax: number;
+  projectionNote: string;
+  warnings: string[];
 };
 
 export default function SupportingDetails({
@@ -12,14 +13,15 @@ export default function SupportingDetails({
   revenue,
   expenses,
   taxRate,
-  outputVAT,
-  inputVAT,
+  monthlyTax,
+  projectionNote,
+  warnings,
 }: Props) {
   return (
     <div className="supporting-grid">
 
       <div className="card glass">
-        <h4>Net Profit</h4>
+        <h4>Projected Net Profit</h4>
         <h2>₦{netProfit.toLocaleString()}</h2>
         <p>
           Revenue ₦{revenue.toLocaleString()} • Expenses ₦{expenses.toLocaleString()}
@@ -32,17 +34,17 @@ export default function SupportingDetails({
       </div>
 
       <div className="card glass">
-        <h4>VAT Breakdown</h4>
-        <p>Output VAT: ₦{outputVAT.toLocaleString()}</p>
-        <p>Input VAT: -₦{inputVAT.toLocaleString()}</p>
+        <h4>Estimated Monthly Tax</h4>
+        <h2>₦{monthlyTax.toLocaleString()}</h2>
+        <p>{projectionNote}</p>
       </div>
 
       <div className="card glass warning">
         <h4>Warnings</h4>
         <ul>
-          <li>⚠ Large unreconciled transfer</li>
-          <li>⚠ Possible period mismatch</li>
-          <li>⚠ WHT inconsistency</li>
+          {(warnings.length > 0 ? warnings : ["No additional warnings."]).map((warning) => (
+            <li key={warning}>{warning}</li>
+          ))}
         </ul>
       </div>
 

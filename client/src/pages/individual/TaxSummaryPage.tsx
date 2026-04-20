@@ -7,12 +7,24 @@ import { calculateTaxPreview, type TaxCalculationResult } from "../../services/f
 import "../../styles/tax-summary.css";
 
 const formatCurrency = (value: number) => `₦${value.toLocaleString("en-NG")}`;
+const formatPeriod = (start: string | null, end: string | null) => {
+  if (!start && !end) {
+    return "uploaded statements";
+  }
+
+  if (start && end && start !== end) {
+    return `${start} to ${end}`;
+  }
+
+  return start || end || "uploaded statements";
+};
 
 export default function TaxSummaryPage() {
   const navigate = useNavigate();
   const [summary, setSummary] = useState<TaxCalculationResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const loadSummary = async () => {
@@ -31,11 +43,14 @@ export default function TaxSummaryPage() {
   }, []);
 
   return (
-    <div className="ind-page">
-      <IndividualSidebar />
+    <div className={`ind-page ${sidebarOpen ? "sidebar-open" : ""}`}>
+      <IndividualSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="ind-main">
-        <Topbar />
+        <Topbar
+          onToggleSidebar={() => setSidebarOpen((open) => !open)}
+          isSidebarOpen={sidebarOpen}
+        />
 
         <div className="ind-content">
           <p className="breadcrumb">Dashboard &gt; Tax Summary</p>
@@ -43,7 +58,7 @@ export default function TaxSummaryPage() {
           <h1 className="page-h1">Tax Summary</h1>
 
           <p className="page-sub">
-            Here is a breakdown of your estimated tax based on your confirmed income data.
+            Here is your projected annual tax outlook based on the statement period you uploaded, not a final filing answer from one month alone.
           </p>
 
           {loading ? (
@@ -53,15 +68,25 @@ export default function TaxSummaryPage() {
           ) : summary ? (
             <>
               <div className="tax-card">
-                <h3>Estimated Tax</h3>
+                <h3>Projected Annual Tax</h3>
 
-                <div className="tax-big">{formatCurrency(summary.totalTax)}</div>
+                <div className="tax-big">{formatCurrency(summary.annualTaxForecast)}</div>
 
-                <p className="muted">Based on confirmed transactions</p>
+                <p className="muted">
+                  Annualized from {summary.monthsObserved} month(s) of transactions in {formatPeriod(summary.periodStart, summary.periodEnd)}
+                </p>
               </div>
 
               <div className="tax-card">
-                <h3>Tax Breakdown</h3>
+                <h3>Estimated Monthly Tax</h3>
+
+                <div className="tax-big">{formatCurrency(summary.monthlyTaxEstimate)}</div>
+
+                <p className="muted">{summary.projectionNote}</p>
+              </div>
+
+              <div className="tax-card">
+                <h3>Forecast Breakdown</h3>
 
                 <table className="tax-table">
                   <thead>
@@ -88,7 +113,7 @@ export default function TaxSummaryPage() {
 
               <div className="tax-card under-card">
                 <h3 className="tax-card-title">
-                  {summary.underpayment > 0 ? "Underpayment" : summary.overpayment > 0 ? "Overpayment" : "Status"}
+                  {summary.underpayment > 0 ? "Projected Underpayment" : summary.overpayment > 0 ? "Projected Overpayment" : "Projected Status"}
                 </h3>
 
                 <div className="tax-under">

@@ -1,26 +1,36 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import type { DashboardMetricRow } from "../../../services/dashboardService";
 
-const data = [
-  {name:"Jan", income:2000000, expenses:1500000},
-  {name:"Feb", income:3000000, expenses:2200000},
-  {name:"Mar", income:3500000, expenses:2000000},
-  {name:"Apr", income:2800000, expenses:3300000}
-];
+type IncomeExpenseChartProps = {
+  incomeData: DashboardMetricRow[];
+  expenseData: DashboardMetricRow[];
+};
 
-export default function IncomeExpenseChart(){
+export default function IncomeExpenseChart({
+  incomeData,
+  expenseData,
+}: IncomeExpenseChartProps) {
+  const mergedData = incomeData.map((row) => ({
+    name: row.month,
+    income: row.amount,
+    expenses:
+      expenseData.find((expenseRow) => expenseRow.month === row.month)?.amount || 0,
+  }));
 
-  return(
+  return (
     <div className="chart-card">
       <h3>Income vs Expenses</h3>
 
-      <BarChart width={400} height={250} data={data}>
-        <XAxis dataKey="name"/>
-        <YAxis/>
-        <Tooltip/>
-        <Legend/>
-        <Bar dataKey="income" fill="#3b82f6"/>
-        <Bar dataKey="expenses" fill="#ef4444"/>
-      </BarChart>
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={mergedData}>
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip formatter={(value) => `₦${Number(value).toLocaleString("en-NG")}`} />
+          <Legend />
+          <Bar dataKey="income" fill="#3b82f6" />
+          <Bar dataKey="expenses" fill="#ef4444" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }

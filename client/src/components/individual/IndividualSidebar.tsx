@@ -1,14 +1,24 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { logoutUser } from "../../services/authService";
 import "../../styles/individual-dashboard.css";
 
-export default function IndividualSidebar() {
+interface IndividualSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function IndividualSidebar({
+  isOpen = false,
+  onClose,
+}: IndividualSidebarProps) {
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const go = (path:string)=>{
     navigate(path);
+    onClose?.();
   };
 
   const active = (path:string)=>{
@@ -16,55 +26,79 @@ export default function IndividualSidebar() {
   };
 
   return (
-    <aside className="ind-sidebar">
+    <>
+      <button
+        type="button"
+        className={`ind-sidebar-backdrop ${isOpen ? "visible" : ""}`}
+        aria-label="Close navigation menu"
+        onClick={onClose}
+      />
 
-      <div className="ind-logo">
-        <img src="/assets/images/logo.png" alt="Logo" />
-      </div>
+      <aside className={`ind-sidebar ${isOpen ? "is-open" : ""}`}>
 
-      <nav className="ind-nav">
+        <div className="ind-sidebar-head">
+          <div className="ind-logo">
+            <img src="/assets/images/logo.png" alt="Logo" />
+          </div>
 
-        <button
-          className={active("/individual/dashboard")}
-          onClick={()=>go("/individual/dashboard")}
-        >
-          Dashboard
-        </button>
+          <button
+            type="button"
+            className="ind-sidebar-close"
+            aria-label="Close navigation menu"
+            onClick={onClose}
+          >
+            x
+          </button>
+        </div>
 
-        <button
-          className={active("/individual/income-deductions")}
-          onClick={()=>go("/individual/income-deductions")}
-        >
-          Income & Deductions
-        </button>
+        <nav className="ind-nav">
 
-        <button
-          className={active("/individual/tax-summary")}
-          onClick={()=>go("/individual/tax-summary")}
-        >
-          Tax Summary
-        </button>
+          <button
+            className={active("/individual/dashboard")}
+            onClick={()=>go("/individual/dashboard")}
+          >
+            Dashboard
+          </button>
 
-        <button
-          className={active("/individual/review-file")}
-          onClick={()=>go("/individual/review-file")}
-        >
-          Review & File
-        </button>
+          <button
+            className={active("/individual/income-deductions")}
+            onClick={()=>go("/individual/income-deductions")}
+          >
+            Income & Deductions
+          </button>
 
-      </nav>
+          <button
+            className={active("/individual/tax-summary")}
+            onClick={()=>go("/individual/tax-summary")}
+          >
+            Tax Summary
+          </button>
 
-      <div className="ind-sidebar-footer">
+          <button
+            className={active("/individual/review-file")}
+            onClick={()=>go("/individual/review-file")}
+          >
+            Review & File
+          </button>
 
-        <button
-          className="logout"
-          onClick={()=>navigate("/login")}
-        >
-          Log out
-        </button>
+        </nav>
 
-      </div>
+        <div className="ind-sidebar-footer">
 
-    </aside>
+          <button
+            className="logout"
+            onClick={() => {
+              logoutUser();
+              navigate("/individual/login");
+              onClose?.();
+            }}
+          >
+            Log out
+          </button>
+
+        </div>
+
+      </aside>
+    </>
   );
 }

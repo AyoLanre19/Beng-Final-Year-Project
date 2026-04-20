@@ -10,10 +10,10 @@ export default function PublicNavbar() {
       </div>
 
       <div className="navbar-center">
-        <a href="/features">Features</a>
-        <a href="/pricing">Pricing</a>
-        <a href="/about">About Us</a>
-        <a href="/faqs">FAQs</a>
+        <Link to="/features">Features</Link>
+        <Link to="/pricing">Pricing</Link>
+        <Link to="/about">About Us</Link>
+        <Link to="/faqs">FAQs</Link>
       </div>
 
       <div className="navbar-right">

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import IndividualSidebar from "../../components/individual/IndividualSidebar";
 import Topbar from "../../components/individual/Topbar";
 
@@ -7,71 +8,172 @@ import SuggestedReliefs from "../../components/individual/IncomeDeduction/Sugges
 import ValidationWarnings from "../../components/individual/IncomeDeduction/ValidationWarnings";
 import AIConfidence from "../../components/individual/IncomeDeduction/AIConfidence";
 import ConfidenceChart from "../../components/individual/IncomeDeduction/ConfidenceChart";
-
-import { useNavigate } from "react-router-dom";
+import {
+  type UploadFinancialDataResult,
+  type UploadPreviewTransaction,
+} from "../../services/filingService";
+import { usePortalUploadData } from "../../hooks/usePortalUploadData";
+import { shortenStatementDescription } from "../../utils/statementText";
 import "../../styles/income-deductions.css";
 
-export default function IncomeDeductionsPage() {
+const fallbackTransactions: Array<{
+  date: string;
+  description: string;
+  amount: string;
+  category: string;
+}> = [];
 
-  const transactions = [
-    { date: "Jan 3, 2024", description: "Salary XYZ Ltd", amount: "₦300,000", category: "Salary" },
-    { date: "Jan 5, 2024", description: "Transfer", amount: "₦50,000", category: "Transfer" },
-    { date: "Jan 7, 2024", description: "POS Payment", amount: "-₦12,000", category: "Expense" },
-    { date: "Jan 12, 2024", description: "Consulting Fee", amount: "₦150,000", category: "Freelance" },
-    { date: "Jan 15, 2024", description: "Cash Deposit", amount: "₦100,000", category: "Other" }
-  ];
-
-  // Function to handle Topbar profile action
-  function handleOpenProfile() {
-    console.log("Profile opened");
-    // You can replace this with actual navigation/modal logic
+const formatDate = (value: string | null): string => {
+  if (!value) {
+    return "No date";
   }
 
-  return (
-    <div className="ind-page">
+  const parsed = new Date(value);
 
-      <IndividualSidebar />
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+
+  return parsed.toLocaleDateString("en-NG", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+const buildCategorySegments = (transactions: UploadPreviewTransaction[]) => {
+  const counts = new Map<string, number>();
+
+  for (const transaction of transactions) {
+    const key = transaction.category || "Needs review";
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+
+  return Array.from(counts.entries())
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, 3)
+    .map(([name, value]) => ({ name, value }));
+};
+
+const buildSuggestedReliefs = (transactions: UploadPreviewTransaction[]) => {
+  const items: string[] = [];
+
+  if (transactions.some((transaction) => transaction.category === "PAYE")) {
+    items.push("PAYE deduction detected");
+  }
+
+  if (transactions.some((transaction) => transaction.category === "DeductibleExpense")) {
+    items.push("Possible deductible expense detected");
+  }
+
+  if (
+    transactions.some((transaction) =>
+      transaction.description.toLowerCase().includes("pension")
+    )
+  ) {
+    items.push("Pension-like payment found");
+  }
+
+  if (
+    transactions.some((transaction) =>
+      transaction.description.toLowerCase().includes("insurance")
+    )
+  ) {
+    items.push("Insurance-like payment found");
+  }
+
+  return items.slice(0, 4);
+};
+
+export default function IncomeDeductionsPage() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const {
+    activeUpload,
+    error,
+    history,
+    loading,
+    selectDocument,
+    handleUploaded,
+  } = usePortalUploadData("individual");
+
+  const uploadResult: UploadFinancialDataResult | null = activeUpload;
+  const previewTransactions = uploadResult?.previewTransactions ?? [];
+  const tableTransactions =
+    previewTransactions.length > 0
+      ? previewTransactions.map((transaction) => ({
+          date: formatDate(transaction.transaction_date),
+          description: shortenStatementDescription(transaction.description),
+          amount: `${transaction.direction === "outflow" ? "-" : ""}NGN ${transaction.amount.toLocaleString("en-NG")}`,
+          category: transaction.category || "Needs review",
+        }))
+      : fallbackTransactions;
+
+  const confidenceValues = previewTransactions
+    .map((transaction) => transaction.confidence)
+    .filter((confidence): confidence is number => confidence !== null);
+
+  const averageConfidence =
+    confidenceValues.length > 0
+      ? confidenceValues.reduce((sum, confidence) => sum + confidence, 0) /
+        confidenceValues.length
+      : null;
+
+  return (
+    <div className={`ind-page ${sidebarOpen ? "sidebar-open" : ""}`}>
+      <IndividualSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="ind-main">
-
-        {/* Pass required prop to Topbar */}
-        <Topbar onOpenProfile={handleOpenProfile} />
+        <Topbar
+          onToggleSidebar={() => setSidebarOpen((open) => !open)}
+          isSidebarOpen={sidebarOpen}
+        />
 
         <div className="ind-content">
-
           <h1 className="page-h1">Income & Deductions</h1>
 
           <p className="page-sub">
-            Upload your bank statement to automatically detect income sources and claim eligible tax reliefs.
+            Upload your bank statement to detect income patterns, surface likely reliefs, and build a tax forecast from the statement period.
           </p>
 
-          <UploadBox />
+          {error ? <p className="page-sub" style={{ color: "#c62828" }}>{error}</p> : null}
+          {loading ? <p className="page-sub">Loading saved upload data...</p> : null}
+          {uploadResult?.ai.status === "processing" ? (
+            <p className="page-sub">
+              AI is still taking time in the background, but the parsed rows, warnings, and relief hints below are already using your saved upload data.
+            </p>
+          ) : null}
 
-          <AIClassificationTable transactions={transactions} />
+          <UploadBox
+            onUploaded={handleUploaded}
+            result={uploadResult}
+            history={history}
+            activeDocumentId={uploadResult?.document?.id || null}
+            onSelectDocument={selectDocument}
+          />
 
-          {/* FIRST ROW */}
+          <AIClassificationTable transactions={tableTransactions} />
+
           <div className="grid-two">
-            <SuggestedReliefs />
-            <ValidationWarnings />
+            <SuggestedReliefs items={buildSuggestedReliefs(previewTransactions)} />
+            <ValidationWarnings warnings={uploadResult?.warnings} />
           </div>
 
-          {/* SECOND ROW */}
           <div className="grid-two">
-            <AIConfidence />
-            <ConfidenceChart />
+            <AIConfidence
+              averageConfidence={averageConfidence}
+              aiStatus={uploadResult?.ai.status}
+            />
+            <ConfidenceChart
+              averageConfidence={averageConfidence}
+              segments={buildCategorySegments(previewTransactions)}
+            />
           </div>
 
-          {/* Confirm Button */}
           <div className="confirm-wrapper">
-            <button className="btn-confirm">
-              Confirm Data
-            </button>
+            <button className="btn-confirm">Confirm Data</button>
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

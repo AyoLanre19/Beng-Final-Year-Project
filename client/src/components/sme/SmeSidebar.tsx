@@ -1,7 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { logoutUser } from "../../services/authService";
 import "../../styles/sme-dashboard.css";
 
-export default function SmeSidebar() {
+interface SmeSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function SmeSidebar({
+  isOpen = false,
+  onClose,
+}: SmeSidebarProps) {
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -9,50 +18,77 @@ export default function SmeSidebar() {
   const active = (path: string) =>
     location.pathname === path ? "sme-nav-item active" : "sme-nav-item";
 
+  const go = (path: string) => {
+    navigate(path);
+    onClose?.();
+  };
+
   return (
-    <aside className="sme-sidebar">
+    <>
+      <button
+        type="button"
+        className={`sme-sidebar-backdrop ${isOpen ? "visible" : ""}`}
+        aria-label="Close navigation menu"
+        onClick={onClose}
+      />
 
-      <div className="sme-logo">Logo</div>
+      <aside className={`sme-sidebar ${isOpen ? "is-open" : ""}`}>
 
-      <nav className="sme-nav">
+        <div className="sme-sidebar-head">
+          <div className="sme-logo">Logo</div>
 
-        <button
-          className={active("/sme/dashboard")}
-          onClick={() => navigate("/sme/dashboard")}
-        >
-          Dashboard
-        </button>
+          <button
+            type="button"
+            className="sme-sidebar-close"
+            aria-label="Close navigation menu"
+            onClick={onClose}
+          >
+            x
+          </button>
+        </div>
 
-        <button
-          className={active("/sme/revenue-expenses")}
-          onClick={() => navigate("/sme/revenue-expenses")}
-        >
-          Revenue & Expenses
-        </button>
+        <nav className="sme-nav">
 
-        <button
-          className={active("/sme/tax-summary")}
-          onClick={() => navigate("/sme/tax-summary")}
-        >
-          Tax Summary
-        </button>
+          <button
+            className={active("/sme/dashboard")}
+            onClick={() => go("/sme/dashboard")}
+          >
+            Dashboard
+          </button>
 
-        <button
-          className={active("/sme/file-tax")}
-          onClick={() => navigate("/sme/file-tax")}
-        >
-          Review & File
-        </button>
+          <button
+            className={active("/sme/revenue-expenses")}
+            onClick={() => go("/sme/revenue-expenses")}
+          >
+            Revenue & Expenses
+          </button>
 
-      </nav>
+          <button
+            className={active("/sme/tax-summary")}
+            onClick={() => go("/sme/tax-summary")}
+          >
+            Tax Summary
+          </button>
 
-      {/* LOGOUT AT BOTTOM */}
-      <div className="sme-logout">
-        <button onClick={() => navigate("/login")}>
-          Log out
-        </button>
-      </div>
+          <button
+            className={active("/sme/file-tax")}
+            onClick={() => go("/sme/file-tax")}
+          >
+            Review & File
+          </button>
 
-    </aside>
+        </nav>
+
+        <div className="sme-logout">
+          <button onClick={() => {
+            logoutUser();
+            go("/sme/login");
+          }}>
+            Log out
+          </button>
+        </div>
+
+      </aside>
+    </>
   );
 }

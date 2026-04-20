@@ -1,5 +1,10 @@
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 
 const data = [
@@ -11,11 +16,19 @@ const data = [
 
 export default function FilingsChart() {
   return (
-    <LineChart width={400} height={250} data={data}>
-      <XAxis dataKey="month" />
-      <YAxis />
-      <Tooltip />
-      <Line type="monotone" dataKey="filings" />
-    </LineChart>
+    <section className="admin-chart-card">
+      <h3>Submitted Filings</h3>
+
+      <div className="admin-chart-shell">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data}>
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="filings" stroke="#4f8dff" strokeWidth={3} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </section>
   );
 }
